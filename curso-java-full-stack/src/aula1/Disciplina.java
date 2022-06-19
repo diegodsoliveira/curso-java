@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Disciplina {
 	private float nota;
 	private String nomeDisciplina;
+	
 	public float getNota() {
 		return nota;
 	}
