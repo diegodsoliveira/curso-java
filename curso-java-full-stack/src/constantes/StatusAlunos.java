@@ -1,4 +1,4 @@
-package Constantes;
+package constantes;
 
 public class StatusAlunos {
 	public static String APROVADO = "Aluno aprovado";

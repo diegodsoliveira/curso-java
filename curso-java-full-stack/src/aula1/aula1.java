@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-import Constantes.StatusAlunos;
+import constantes.StatusAlunos;
 
 public class aula1 {
 

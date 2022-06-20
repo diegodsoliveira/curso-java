@@ -4,34 +4,14 @@ import java.io.ObjectInputFilter.Status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import constantes.StatusAlunos;
 
-import Constantes.StatusAlunos;
-
-public class Aluno {
-	private String nome;
-	private String cpf;
-	private String cep;
+public class Aluno extends Pessoa {
+	private String dataMatricula;
+	private String nomeEscola;
+	private String serieMatriculado;
 	private List<Disciplina> disciplinas = new ArrayList<Disciplina>();
 	
-	public String getNome() {
-		return nome;
-	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-	public String getCep() {
-		return cep;
-	}
-	public void setCep(String cep) {
-		this.cep = cep;
-	}
-
 	public List<Disciplina> getDisciplina() {
 		return disciplinas;
 	}
@@ -62,29 +42,4 @@ public class Aluno {
 			return StatusAlunos.REPROVADO;
 		}
 	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(cep, cpf, disciplinas, nome);
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Aluno other = (Aluno) obj;
-		return Objects.equals(cep, other.cep) && Objects.equals(cpf, other.cpf)
-				&& Objects.equals(disciplinas, other.disciplinas) && Objects.equals(nome, other.nome);
-	}
-	@Override
-	public String toString() {
-		return "Aluno [nome=" + nome + ", cpf=" + cpf + ", cep=" + cep + ", disciplinas=" + disciplinas + "]";
-	}
-	
-
-	
-	
-	
 }
