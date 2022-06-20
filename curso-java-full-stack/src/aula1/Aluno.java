@@ -1,8 +1,11 @@
 package aula1;
 
+import java.io.ObjectInputFilter.Status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import Constantes.StatusAlunos;
 
 public class Aluno {
 	private String nome;
@@ -45,6 +48,19 @@ public class Aluno {
 	
 	public float getMediaNota() {
 		return somaNotas() / disciplinas.size();
+	}
+	
+	public String getAlunoAprovado() {
+		float media = getMediaNota();
+		if (media > 50) {
+			if (media < 70) {
+				return StatusAlunos.RECUPERACAO;
+			} else {
+				return StatusAlunos.APROVADO;
+			}
+		} else {
+			return StatusAlunos.REPROVADO;
+		}
 	}
 	@Override
 	public int hashCode() {
