@@ -1,4 +1,4 @@
-package aula1;
+package executavel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.text.StyledEditorKit.ForegroundAction;
 
+import classes.Aluno;
+import classes.Disciplina;
 import constantes.StatusAlunos;
 
 public class aula1 {

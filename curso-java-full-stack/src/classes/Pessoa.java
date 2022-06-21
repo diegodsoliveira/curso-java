@@ -1,8 +1,8 @@
-package aula1;
+package classes;
 
 import java.util.Objects;
 
-public class Pessoa {
+public abstract class Pessoa {
 	protected String nome;
 	private int idade;
 	private String dataNascimento;

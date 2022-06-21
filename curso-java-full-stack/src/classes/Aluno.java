@@ -1,6 +1,5 @@
-package aula1;
+package classes;
 
-import java.io.ObjectInputFilter.Status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,4 +41,30 @@ public class Aluno extends Pessoa {
 			return StatusAlunos.REPROVADO;
 		}
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(dataMatricula, disciplinas, nomeEscola, serieMatriculado);
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Aluno other = (Aluno) obj;
+		return Objects.equals(dataMatricula, other.dataMatricula) && Objects.equals(disciplinas, other.disciplinas)
+				&& Objects.equals(nomeEscola, other.nomeEscola)
+				&& Objects.equals(serieMatriculado, other.serieMatriculado);
+	}
+	@Override
+	public String toString() {
+		return "Aluno [dataMatricula=" + dataMatricula + ", nomeEscola=" + nomeEscola + ", serieMatriculado="
+				+ serieMatriculado + ", disciplinas=" + disciplinas + "]";
+	}
+	
 }
