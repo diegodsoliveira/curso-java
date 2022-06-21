@@ -3,13 +3,9 @@ package classes;
 import java.util.Objects;
 
 public abstract class Pessoa {
-	protected String nome;
-	private int idade;
-	private String dataNascimento;
-	private String registroGeral;
-	private String numeroCpf;
-	private String nomePai;
-	private String nomeMae;
+	protected int idade;
+	protected String nome, dataNascimento, registroGeral, numeroCpf, nomePai, nomeMae;
+	
 	public String getNome() {
 		return nome;
 	}

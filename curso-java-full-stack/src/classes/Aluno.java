@@ -4,12 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import constantes.StatusAlunos;
+import entidades.PermiteAcesso;
 
-public class Aluno extends Pessoa {
-	private String dataMatricula;
-	private String nomeEscola;
-	private String serieMatriculado;
+public class Aluno extends Pessoa implements PermiteAcesso {
+	private String dataMatricula, nomeEscola, serieMatriculado, login, senha;
 	private List<Disciplina> disciplinas = new ArrayList<Disciplina>();
+	
+	public Aluno(String login, String senha) {
+		this.login = login;
+		this.senha = senha;
+	}
+	
+	public Aluno() {
+	}
+
+	
 	
 	public List<Disciplina> getDisciplina() {
 		return disciplinas;
@@ -65,6 +74,17 @@ public class Aluno extends Pessoa {
 	public String toString() {
 		return "Aluno [dataMatricula=" + dataMatricula + ", nomeEscola=" + nomeEscola + ", serieMatriculado="
 				+ serieMatriculado + ", disciplinas=" + disciplinas + "]";
+	}
+	
+	@Override
+	public boolean autenticar(String login, String senha) {
+		this.login = login;
+		this.senha = senha;
+		return autenticar();
+	}
+	@Override
+	public boolean autenticar() {
+		return login.equals("admin") && senha.equals("admin");
 	}
 	
 }

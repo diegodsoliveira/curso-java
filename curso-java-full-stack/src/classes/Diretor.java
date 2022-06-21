@@ -2,11 +2,30 @@ package classes;
 
 import java.util.Objects;
 
-public class Diretor extends Pessoa {
-	private String registroEducacao;
+import entidades.PermiteAcesso;
+
+public class Diretor extends Pessoa implements PermiteAcesso {
+	private String registroEducacao, titulacao, login, senha;
 	private int tempoDirecao;
-	private String titulacao;
 	
+	
+	public Diretor(String login, String senha) {
+		this.login = login;
+		this.senha = senha;
+	}
+	
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
+	}
+	public String getSenha() {
+		return senha;
+	}
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 	public String getRegistroEducacao() {
 		return registroEducacao;
 	}
@@ -48,6 +67,17 @@ public class Diretor extends Pessoa {
 	public String toString() {
 		return "Diretor [registroEducacao=" + registroEducacao + ", tempoDirecao=" + tempoDirecao + ", titulacao="
 				+ titulacao + "]";
+	}
+	
+	@Override
+	public boolean autenticar(String login, String senha) {
+		this.login = login;
+		this.senha = senha;
+		return autenticar();
+	}
+	@Override
+	public boolean autenticar() {
+		return login.equals("admin") && senha.equals("admin");
 	}
 	
 	
