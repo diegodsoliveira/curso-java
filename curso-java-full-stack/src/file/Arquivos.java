@@ -9,11 +9,9 @@ import java.util.List;
 public class Arquivos {
 
 	public static void main(String[] args) throws IOException {
-		
 		Pessoa pessoa1 = new Pessoa();
 		Pessoa pessoa2 = new Pessoa();
 		Pessoa pessoa3 = new Pessoa();
-		
 		File arquivo = new File("C:\\Users\\diego\\git\\repository\\curso-java-full-stack\\src\\file\\arquivo.txt");
 		
 		pessoa1.setEmail("pessoa1@gmail.com");
@@ -27,7 +25,7 @@ public class Arquivos {
 		pessoa3.setEmail("pessoa3@gmail.com");
 		pessoa3.setNome("José Monteiro");
 		pessoa3.setTelefone("19237891237");
-		
+
 		List<Pessoa> pessoas = new ArrayList<Pessoa>();
 		pessoas.add(pessoa3);
 		pessoas.add(pessoa2);

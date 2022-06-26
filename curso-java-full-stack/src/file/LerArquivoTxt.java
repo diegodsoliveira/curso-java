@@ -48,20 +48,20 @@ public class LerArquivoTxt {
 						pessoa.setTelefone(null);
 					}
 					/*
-					if (!dados[4].isEmpty()) {
+					if (dados[4] != null && !dados[4].isEmpty()) {
 						pessoa.setCidade(dados[4]);
 					} else {
 						pessoa.setCidade(null);
-					}*/
-					
+					}
+					*/
 					pessoas.add(pessoa);
 				}
 			}
 			
 			// varre a lista de pessoas e imprime os dados
-			for (Pessoa pessoa : pessoas) {
-				if (pessoa.getNome() != null && pessoa.getNome().contains("Maria")) {
-					System.out.println(pessoa);
+			for (Pessoa p : pessoas) {
+				if (p.getNome() != null && p.getNome().contains("Maria")) {
+					System.out.println(p);
 				}
 			}
 		}
