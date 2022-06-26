@@ -41,14 +41,14 @@ public class ArquivoXls {
 		pessoas.add(pessoa1);
 
 		
-		try (HSSFWorkbook hssfWorkbook = new HSSFWorkbook()) {
-			HSSFSheet linhas = hssfWorkbook.createSheet("Planilha de pessoas");
+		try (HSSFWorkbook hssfWorkbook = new HSSFWorkbook()) { //prepara a entrada do arquivo xls
+			HSSFSheet linhas = hssfWorkbook.createSheet("Planilha de pessoas"); //pega a planilha
 			
 			int numeroLinha = 0;
 			
 			for (Pessoa p : pessoas) {
 				
-				Row linha = linhas.createRow(numeroLinha++);
+				Row linha = linhas.createRow(numeroLinha++); //dados da pessoa na linha
 				
 				int celula = 0;
 				
