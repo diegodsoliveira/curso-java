@@ -25,14 +25,14 @@ public class EditaXls {
 			Row linha = linhaIterator.next(); //dados da pessoa na linha
 			String valorCelula = linha.getCell(0).getStringCellValue();
 			
-			linha.getCell(0).setCellValue(valorCelula + " teste contatenacao");
+			linha.getCell(0).setCellValue(valorCelula + " teste concatenacao");
 			
 		}
-		entrada.close();
 		FileOutputStream saida = new FileOutputStream(arquivo);
 		hssfWorkbook.write(saida);
 		saida.flush();
 		saida.close();
+		entrada.close();
 		
 		System.out.println("Planilha atualizada");
 	}
