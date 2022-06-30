@@ -6,8 +6,8 @@ package web.mail;
  */
 public class AppTest {
 	
-	private String userName = "contato@viajarabessa.com.br";
-	private String pass = "JoaoPedro1983";
+	private String userName = ""; // usuario da conta de email
+	private String pass = ""; // senha da conta de email
 
 	@org.junit.Test
 	public void testeEmail() throws Exception {
