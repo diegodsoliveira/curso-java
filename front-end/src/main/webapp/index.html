@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capturando dados de um formulário</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <section class="container">
+      <form action="salvarDados" method="post">
+        <input
+          type="text"
+          name="nome"
+          id="nome"
+          placeholder="Insira seu nome"
+          required="true"
+        />
+        <input
+          type="text"
+          name="login"
+          id="login"
+          placeholder="Insira o login"
+          required="true"
+        />
+        <input
+          type="password"
+          name="senha"
+          id="senha"
+          placeholder="Insira sua senha"
+          required="true"
+        />
+        <button
+          name="submitButton"
+          id="btn-submit"
+          type="submit"
+          class="button"
+        >
+          Salvar
+        </button>
+      </form>
+    </section>
+    <script type="text/javascript">
+      /*
+
+      function validarDados() {
+        var nome = document.getElementById('nome')
+        var login = document.getElementById('login')
+        var senha = document.getElementById('senha')
+
+        if (nome == null) {
+          alert('Informe o nome')
+          return false
+        } else if (login == null) {
+          alert('Informe o login')
+          return false
+        } else if (senha == null) {
+          alert('Informe a senha')
+          return false
+        }
+        return true
+      }
+      -->*/
+    </script>
+  </body>
+</html>

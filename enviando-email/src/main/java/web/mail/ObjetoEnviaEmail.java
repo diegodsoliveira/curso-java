@@ -19,11 +19,18 @@ public class ObjetoEnviaEmail {
 	private String assuntoEmail = "";
 	private String textoEmail = "";
 	
-	public ObjetoEnviaEmail(String listaDestinatarios, String nomeRemetente, String assuntoEmail, String textoEmail) {
+	public ObjetoEnviaEmail(String listaDestinatarios, String nomeRemetente, String assuntoEmail, String textoEmail, String login, String senha) {
 		this.listaDestinatarios = listaDestinatarios;
 		this.nomeRemetente = nomeRemetente;
 		this.assuntoEmail = assuntoEmail;
 		this.textoEmail = textoEmail;
+		loginSmtp(login, senha);
+		
+	}
+	
+	private void loginSmtp(String login, String senha) {
+		this.userName = login;
+		this.pass = senha;
 	}
 
 	public void enviaEmail(boolean tipoHtml) throws Exception {
