@@ -7,13 +7,9 @@ import javax.swing.JOptionPane;
  */
 public class AppTest {
 	
-<<<<<<< HEAD
 	private String userName = JOptionPane.showInputDialog("Login: ");
 	private String pass = JOptionPane.showInputDialog("Senha: ");
-=======
-	private String userName = ""; // usuario da conta de email
-	private String pass = ""; // senha da conta de email
->>>>>>> refs/heads/java-web
+
 
 	@org.junit.Test
 	public void testeEmail() throws Exception {
