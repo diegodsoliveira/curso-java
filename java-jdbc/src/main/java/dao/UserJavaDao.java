@@ -131,11 +131,10 @@ public class UserJavaDao {
 		}
 	}
 
-	public void deletar(Long id) throws SQLException {
-		String sql = "DELETE from userjavasql WHERE ID = " + id;
-
+	public void deletar(String sql) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement(sql);
-		statement.execute();
+		// statement.execute();
+		statement.executeUpdate();
 		connection.commit();
 		try {
 			connection.rollback();

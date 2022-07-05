@@ -7,7 +7,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import classes.Aluno;
-import classes.Diretor;
 import classes.Disciplina;
 import constantes.StatusAlunos;
 import util.FuncaoAutenticacao;

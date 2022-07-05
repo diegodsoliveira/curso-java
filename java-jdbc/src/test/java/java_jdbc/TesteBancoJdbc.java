@@ -73,7 +73,9 @@ public class TesteBancoJdbc {
 	public void deletarItemBanco() {
 		try {
 			UserJavaDao dao = new UserJavaDao();
-			dao.deletar(2L);
+			dao.deletar("DELETE from telefone_user WHERE usuariopessoa = " + 3L);
+			dao.deletar("delete from userjavasql where id = " + 3L);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -101,9 +103,10 @@ public class TesteBancoJdbc {
 		UserJavaDao dao = new UserJavaDao();
 		
 		try {
-			List<BeanConsulta> bean = dao.listarUserTelefone(1L);
+			List<BeanConsulta> bean = dao.listarUserTelefone(3L);
 			
-			bean.forEach(c -> System.out.println(c));
+			bean.forEach(c -> System.out.println(c.getNome() + ", telefone (" + c.getTipo() + ") " + c.getTelefone() + ", " 
+					+ c.getEmail()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
