@@ -1,9 +1,8 @@
-package java_jdbc.java_jdbc;
+package java_jdbc;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -102,7 +101,7 @@ public class TesteBancoJdbc {
 		UserJavaDao dao = new UserJavaDao();
 		
 		try {
-			List<BeanConsulta> bean = dao.listarUserTelefone(4L);
+			List<BeanConsulta> bean = dao.listarUserTelefone(1L);
 			
 			bean.forEach(c -> System.out.println(c));
 		} catch (Exception e) {
