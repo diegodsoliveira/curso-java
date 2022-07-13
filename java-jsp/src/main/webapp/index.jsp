@@ -4,7 +4,7 @@ pageEncoding="UTF-8"%>
 <html lang="pt_br">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/style-login.css" />
+    <link rel="stylesheet" href="./css/style-login.css" />
     <title>Java Jsp</title>
   </head>
   <body>
