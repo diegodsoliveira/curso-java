@@ -11,7 +11,7 @@ pageEncoding="UTF-8"%>
     <div class="container">
       <h1>login</h1>
 
-      <form class="login" action="/java-jsp/ServletLogin" method="post">
+      <form class="login" action="<%= request.getContextPath() %>/ServletLogin" method="post">
       	<input type="hidden" value="<%= request.getParameter("url") %>" name="url" />
         <input
           type="text"

@@ -8,10 +8,10 @@
 	<div class="pcoded-inner-navbar main-menu">
 		<div class="">
 			<div class="main-menu-header">
-				<img class="img-80 img-radius" src="assets/images/avatar-4.jpg"
+				<img class="img-80 img-radius" src="<%= request.getContextPath() %>/assets/images/avatar-4.jpg"
 					alt="User-Profile-Image">
 				<div class="user-details">
-					<span id="more-details">John Doe<i class="fa fa-caret-down"></i></span>
+					<span id="more-details"><%= session.getAttribute("usuario") %><i class="fa fa-caret-down"></i></span>
 				</div>
 			</div>
 
@@ -20,7 +20,7 @@
 					<li class="more-details"><a href="user-profile.html"><i
 							class="ti-user"></i>Ver perfil</a> <a href="#!"><i
 							class="ti-settings"></i>Configurações</a> <a
-						href="auth-normal-sign-in.html"><i
+						href="<%= request.getContextPath() %>/ServletLogin?acao=Logout"><i
 							class="ti-layout-sidebar-left"></i>Logout</a></li>
 				</ul>
 			</div>
@@ -36,7 +36,7 @@
 		</div>
 		<div class="pcoded-navigation-label" data-i18n="nav.category.navigation">Layout</div>
 		<ul class="pcoded-item pcoded-left-item">
-			<li class="active"><a href="index.html"
+			<li class="active"><a href="principal.jsp"
 				class="waves-effect waves-dark"> <span class="pcoded-micon"><i
 						class="ti-home"></i><b>D</b></span> <span class="pcoded-mtext"
 					data-i18n="nav.dash.main">Dashboard</span> <span
@@ -49,10 +49,10 @@
 					class="pcoded-mcaret"></span>
 			</a>
 				<ul class="pcoded-submenu">
-					<li class=" "><a href="accordion.html"
+					<li class=" "><a href="<%= request.getContextPath() %>/principal/usuario.jsp"
 						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
 								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.alert">Accordion</span> <span
+							data-i18n="nav.basic-components.alert">Usuário</span> <span
 							class="pcoded-mcaret"></span>
 					</a></li>
 					<li class=" "><a href="breadcrumb.html"
