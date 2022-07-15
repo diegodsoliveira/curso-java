@@ -68,3 +68,9 @@ form button:hover {
 	font-size: 12px;
 	font-family: 'Roboto', sans-serif;
 }
+.sucesso {
+	margin-top: 16px;
+	color: green;
+	font-size: 12px;
+	font-family: 'Roboto', sans-serif;
+}

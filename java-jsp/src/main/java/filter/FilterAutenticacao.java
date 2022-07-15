@@ -12,14 +12,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import connection.SingleConnectionBanco;
 
 @WebFilter(urlPatterns = { "/principal/*" }) // Intercepta todas as requisições que vierem do projeto ou mapeamento
-public class FilterAutenticacao extends HttpFilter implements Filter {
+public class FilterAutenticacao implements Filter {
 
 	private static Connection connection;
 
@@ -35,7 +34,12 @@ public class FilterAutenticacao extends HttpFilter implements Filter {
 		}
 	}
 
-	/* Intercepta as requisições e dá as respostas no sistema */
+	/** Intercepta as requisições e dá as respostas no sistema *
+	 * Validar e fazer redirecionamento de páginas
+	 * Validação de autenticação
+	 * 
+	 * 
+	 * */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
@@ -46,11 +50,10 @@ public class FilterAutenticacao extends HttpFilter implements Filter {
 
 			String usuarioLogado = (String) session.getAttribute("usuario");
 
-			String urlAutenticar = req.getServletPath();
+			String urlAutenticar = req.getServletPath(); // retorna a url que está sendo acessada
 
 			// validar se está logado. Se não, redireciona para a tela de login
-			if (usuarioLogado == null && !urlAutenticar.equalsIgnoreCase("/principal/ServletLogin")) { // não está
-																										// logado
+			if (usuarioLogado == null && !urlAutenticar.equalsIgnoreCase("/principal/ServletLogin")) { // não está logado
 				RequestDispatcher redireciona = request.getRequestDispatcher("/index.jsp?url=" + urlAutenticar);
 				request.setAttribute("msg", "É preciso estar logado no sistema");
 				redireciona.forward(request, response);
@@ -61,18 +64,22 @@ public class FilterAutenticacao extends HttpFilter implements Filter {
 			connection.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 			RequestDispatcher redirecionador = request.getRequestDispatcher("erro.jsp");
 			request.setAttribute("msg", e.getMessage());
 			redirecionador.forward(request, response);
+			
 			try {
-				connection.rollback();
+				connection.rollback(); // cancela a conexão em caso de erro
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
 		}
 	}
 
-	/* Inicia os processos ou recursos quando o servidor sobe o projeto */
+	/** Inicia os processos ou recursos quando o servidor sobe o projeto 
+	 *  Inicia a conexão com o banco
+	 * */
 	public void init(FilterConfig fConfig) throws ServletException {
 		connection = SingleConnectionBanco.getConnection();
 	}

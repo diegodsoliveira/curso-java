@@ -12,8 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import dao.DAOLoginRepository;
 import model.ModelLogin;
 
-@WebServlet("/ServletLogin") // mapeamento da url que vem da tela
+@WebServlet(urlPatterns = {"/principal/ServletLogin", "/ServletLogin"}) // mapeamento da url que vem da tela
 public class ServletLogin extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 
 	private DAOLoginRepository daoLoginRepository = new DAOLoginRepository();
@@ -21,20 +22,23 @@ public class ServletLogin extends HttpServlet {
 	public ServletLogin() {
 	}
 
+	/* recebe os dados pela url através de parâmetros */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		String acao = request.getParameter("acao");
 
-		if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("acao")) {
+		if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("logout")) {
+			
 			request.getSession().invalidate(); // invalida a sessao
-			RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
-			redirecionar.forward(request, response);
+			request.getRequestDispatcher("index.jsp").forward(request, response); // redireciona
+			
 		} else {
 			doPost(request, response);
 		}
 	}
 
+	/* recebe os dados enviados por um formulário através do método POST */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -45,6 +49,7 @@ public class ServletLogin extends HttpServlet {
 		try {
 
 			if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
+				
 				ModelLogin modelLogin = new ModelLogin();
 				modelLogin.setLogin(login);
 				modelLogin.setSenha(senha);
@@ -56,23 +61,27 @@ public class ServletLogin extends HttpServlet {
 					if (url == null || url.equals("null")) {
 						url = "principal/principal.jsp";
 					}
-					RequestDispatcher redirecionador = request.getRequestDispatcher(url);
-					redirecionador.forward(request, response);
+					
+					request.getRequestDispatcher(url).forward(request, response);
+					
 				} else {
-					RequestDispatcher redirecionador = request.getRequestDispatcher("index.jsp");
-					request.setAttribute("msg", "Informe os dados corretamente");
-					redirecionador.forward(request, response);
+					
+					request.setAttribute("msg", "Login ou senha inválidos");
+					request.getRequestDispatcher("index.jsp").forward(request, response);
+					
 				}
 			} else {
-				RequestDispatcher redirecionador = request.getRequestDispatcher("index.jsp");
-				request.setAttribute("msg", "Informe os dados corretamente");
-				redirecionador.forward(request, response);
+				
+				request.setAttribute("msg", "Login ou senha inválidos");
+				request.getRequestDispatcher("index.jsp").forward(request, response);
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			RequestDispatcher redirecionador = request.getRequestDispatcher("erro.jsp");
+			
 			request.setAttribute("msg", e.getMessage());
-			redirecionador.forward(request, response);
+			request.getRequestDispatcher("erro.jsp").forward(request, response);
+			
 		}
 
 	}
