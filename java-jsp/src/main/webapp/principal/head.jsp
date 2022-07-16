@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <head>
 	<title>Projeto em JSP</title>
 	<!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
