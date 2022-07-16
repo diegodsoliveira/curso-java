@@ -3,7 +3,6 @@ package servlets;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,15 +39,15 @@ public class ServletUsuarioController extends HttpServlet {
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("deletarAjax")) {
+
 				String idUser = request.getParameter("id");
 
 				daoUsuarioRepository.deletarUsuario(idUser);
-
-				response.getWriter().write("Excluído com sucesso");
+				response.getWriter().write("Excluido com sucesso!");
 
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUser")) {
 
-				String nomeBusca = request.getParameter("nomeBusca");
+				String nomeBusca = request.getParameter("inputNomeBusca");
 
 				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.buscarUsuarios(nomeBusca);
 
@@ -58,15 +57,29 @@ public class ServletUsuarioController extends HttpServlet {
 
 				response.getWriter().write(json);
 
-			} else {
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
+				
+				String id = request.getParameter("id");
+				
+				ModelLogin usuario = daoUsuarioRepository.consultaUsuarioID(id);
+				
+				request.setAttribute("msg", "Dados importados");
+				request.setAttribute("modelusuario", usuario);
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+				
+			}
+
+			else {
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 
-		} catch (Exception e) {
+		} catch (
 
-			request.setAttribute("msgerro", e.getMessage());
+		Exception e) {
+
+			request.setAttribute("msg", e.getMessage());
 			request.getRequestDispatcher("erro.jsp").forward(request, response);
-			
+
 		}
 	}
 
@@ -107,9 +120,9 @@ public class ServletUsuarioController extends HttpServlet {
 			request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			
+
 			request.setAttribute("msgerro", e.getMessage());
 			request.getRequestDispatcher("erro.jsp").forward(request, response);
 

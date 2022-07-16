@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -54,10 +53,13 @@ public class FilterAutenticacao implements Filter {
 
 			// validar se está logado. Se não, redireciona para a tela de login
 			if (usuarioLogado == null && !urlAutenticar.equalsIgnoreCase("/principal/ServletLogin")) { // não está logado
-				RequestDispatcher redireciona = request.getRequestDispatcher("/index.jsp?url=" + urlAutenticar);
+				
 				request.setAttribute("msg", "É preciso estar logado no sistema");
-				redireciona.forward(request, response);
+				
+				request.getRequestDispatcher("/index.jsp?url=" + urlAutenticar).forward(request, response);
+				
 				return; // para a execução e redireciona para o login
+				
 			} else {
 				chain.doFilter(request, response);
 			}
@@ -65,9 +67,8 @@ public class FilterAutenticacao implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			RequestDispatcher redirecionador = request.getRequestDispatcher("erro.jsp");
 			request.setAttribute("msg", e.getMessage());
-			redirecionador.forward(request, response);
+			request.getRequestDispatcher("erro.jsp").forward(request, response);
 			
 			try {
 				connection.rollback(); // cancela a conexão em caso de erro
