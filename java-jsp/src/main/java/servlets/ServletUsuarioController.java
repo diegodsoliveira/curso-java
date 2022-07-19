@@ -3,18 +3,24 @@ package servlets;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.tomcat.jakartaee.commons.compress.utils.IOUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOUsuarioRepository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import model.ModelLogin;
 
-@WebServlet("/ServletUsuarioController")
-public class ServletUsuarioController extends HttpServlet {
+@MultipartConfig
+@WebServlet(urlPatterns = { "/ServletUsuarioController" })
+public class ServletUsuarioController extends ServletGenericUtil {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,6 +40,9 @@ public class ServletUsuarioController extends HttpServlet {
 
 				daoUsuarioRepository.deletarUsuario(idUser);
 
+				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
+				request.setAttribute("modelLogins", modelLogins);
+
 				request.setAttribute("msg", "Excluído com sucesso.");
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
@@ -48,7 +57,8 @@ public class ServletUsuarioController extends HttpServlet {
 
 				String nomeBusca = request.getParameter("inputNomeBusca");
 
-				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.buscarUsuarios(nomeBusca);
+				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.buscarUsuarios(nomeBusca,
+						super.getUserLogado(request));
 
 				ObjectMapper mapper = new ObjectMapper();
 
@@ -57,18 +67,32 @@ public class ServletUsuarioController extends HttpServlet {
 				response.getWriter().write(json);
 
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
-				
+
 				String id = request.getParameter("id");
-				
-				ModelLogin usuario = daoUsuarioRepository.consultaUsuarioID(id);
-				
+
+				ModelLogin usuario = daoUsuarioRepository.consultaUsuarioID(id, super.getUserLogado(request));
+
 				request.setAttribute("msg", "Dados importados");
 				request.setAttribute("modelusuario", usuario);
+
+				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
+				request.setAttribute("modelLogins", modelLogins);
+
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
-				
+
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
+
+				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
+
+				request.setAttribute("msg", "Usuarios carregados");
+				request.setAttribute("modelLogins", modelLogins);
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+
 			}
 
 			else {
+				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
+				request.setAttribute("modelLogins", modelLogins);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 
@@ -93,6 +117,8 @@ public class ServletUsuarioController extends HttpServlet {
 			String email = request.getParameter("email");
 			String login = request.getParameter("login");
 			String senha = request.getParameter("senha");
+			String perfil = request.getParameter("perfil");
+			String sexo = request.getParameter("sexo");
 
 			ModelLogin modelLogin = new ModelLogin();
 			modelLogin.setId(id != null && !id.isEmpty() ? Long.valueOf(id) : null);
@@ -100,6 +126,19 @@ public class ServletUsuarioController extends HttpServlet {
 			modelLogin.setEmail(email);
 			modelLogin.setLogin(login);
 			modelLogin.setSenha(senha);
+			modelLogin.setPerfil(perfil);
+			modelLogin.setSexo(sexo);
+
+			if (ServletFileUpload.isMultipartContent(request)) {
+				Part part = request.getPart("fileFoto"); // pega a foto da tela
+
+				byte[] foto = IOUtils.toByteArray(part.getInputStream()); // conver imagem para byte
+				String imagemBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64,"
+						+ new Base64().encodeBase64String(foto);
+
+				modelLogin.setFotoUser(imagemBase64);
+				modelLogin.setExtensaoFotoUser(part.getContentType().split("\\/")[1]);
+			}
 
 			if (daoUsuarioRepository.validarLogin(modelLogin.getLogin()) && modelLogin.getId() == null) {
 
@@ -111,11 +150,15 @@ public class ServletUsuarioController extends HttpServlet {
 				} else {
 					msg = "Atualizado com sucesso.";
 				}
-				modelLogin = daoUsuarioRepository.gravarUsuario(modelLogin);
+				modelLogin = daoUsuarioRepository.gravarUsuario(modelLogin, super.getUserLogado(request));
 			}
 
 			request.setAttribute("msg", msg);
 			request.setAttribute("modelusuario", modelLogin);
+
+			List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
+			request.setAttribute("modelLogins", modelLogins);
+
 			request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 		} catch (Exception e) {
