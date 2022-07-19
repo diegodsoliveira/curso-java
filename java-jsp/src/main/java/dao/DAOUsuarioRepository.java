@@ -3,8 +3,11 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.StatementEvent;
 
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
@@ -17,20 +20,101 @@ public class DAOUsuarioRepository {
 		connection = SingleConnectionBanco.getConnection();
 	}
 
+	public PreparedStatement preparaStringSqlGravar(ModelLogin obj, Long idUserLogado) throws Exception {
+
+		String sql = "INSERT INTO model_login(senha, login, nome, email, usuario_id, perfil, sexo, cep, logradouro, bairro, localidade, uf, numero)"
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+
+		statement.setString(1, obj.getSenha());
+		statement.setString(2, obj.getLogin());
+		statement.setString(3, obj.getNome());
+		statement.setString(4, obj.getEmail());
+		statement.setLong(5, idUserLogado);
+		statement.setString(6, obj.getPerfil());
+		statement.setString(7, obj.getSexo());
+		statement.setString(8, obj.getCep());
+		statement.setString(9, obj.getBairro());
+		statement.setString(10, obj.getLocalidade());
+		statement.setString(11, obj.getLogradouro());
+		statement.setString(12, obj.getUf());
+		statement.setString(13, obj.getNumero());
+
+		return statement;
+	}
+
+	public PreparedStatement preparaStringSqlUpdate(ModelLogin obj) throws Exception {
+
+		String sql = "UPDATE model_login SET senha=?, login=?, nome=?, email=?, perfil=?, sexo=?,"
+				+ " cep=?, bairro=?, localidade=?, logradouro=?, uf=?, numero=? " + "WHERE id=?";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+
+		statement.setString(1, obj.getSenha());
+		statement.setString(2, obj.getLogin());
+		statement.setString(3, obj.getNome());
+		statement.setString(4, obj.getEmail());
+		statement.setString(5, obj.getPerfil());
+		statement.setString(6, obj.getSexo());
+		statement.setString(7, obj.getCep());
+		statement.setString(8, obj.getBairro());
+		statement.setString(9, obj.getLocalidade());
+		statement.setString(10, obj.getLogradouro());
+		statement.setString(11, obj.getUf());
+		statement.setString(12, obj.getNumero());
+		statement.setLong(13, obj.getId());
+
+		return statement;
+	}
+
+	public ModelLogin setaCamposConsulta(ModelLogin objeto, ResultSet resultado) throws Exception {
+
+		objeto.setEmail(resultado.getString("email"));
+		objeto.setId(resultado.getLong("id"));
+		objeto.setLogin(resultado.getString("login"));
+		objeto.setNome(resultado.getString("nome"));
+		objeto.setUserAdmin(resultado.getBoolean("useradmin"));
+		objeto.setPerfil(resultado.getString("perfil"));
+		objeto.setSexo(resultado.getString("sexo"));
+		objeto.setCep(resultado.getString("cep"));
+		objeto.setLogradouro(resultado.getString("logradouro"));
+		objeto.setBairro(resultado.getString("bairro"));
+		objeto.setLocalidade(resultado.getString("localidade"));
+		objeto.setUf(resultado.getString("uf"));
+		objeto.setNumero(resultado.getString("numero"));
+
+		return objeto;
+	}
+	
+	public ModelLogin setaCamposConsultaComFoto(ModelLogin objeto, ResultSet resultado) throws Exception {
+
+		objeto.setEmail(resultado.getString("email"));
+		objeto.setId(resultado.getLong("id"));
+		objeto.setLogin(resultado.getString("login"));
+		objeto.setNome(resultado.getString("nome"));
+		objeto.setSenha(resultado.getString("senha"));
+		objeto.setUserAdmin(resultado.getBoolean("useradmin"));
+		objeto.setPerfil(resultado.getString("perfil"));
+		objeto.setSexo(resultado.getString("sexo"));
+		objeto.setFotoUser(resultado.getString("fotouser"));
+		objeto.setExtensaoFotoUser(resultado.getString("extensaofotouser"));
+		objeto.setCep(resultado.getString("cep"));
+		objeto.setLogradouro(resultado.getString("logradouro"));
+		objeto.setBairro(resultado.getString("bairro"));
+		objeto.setLocalidade(resultado.getString("localidade"));
+		objeto.setUf(resultado.getString("uf"));
+		objeto.setNumero(resultado.getString("numero"));
+
+		return objeto;
+	}
+
 	public ModelLogin gravarUsuario(ModelLogin obj, Long idUserLogado) throws Exception {
+		String sql;
 
 		if (obj.isNovo()) { // grava um novo usuário
 
-			String sql = "INSERT INTO model_login(senha, login, nome, email, usuario_id, perfil, sexo) VALUES (?, ?, ?, ?, ?, ?, ?);";
-			PreparedStatement statement = connection.prepareStatement(sql);
-
-			statement.setString(1, obj.getSenha());
-			statement.setString(2, obj.getLogin());
-			statement.setString(3, obj.getNome());
-			statement.setString(4, obj.getEmail());
-			statement.setLong(5, idUserLogado);
-			statement.setString(6, obj.getPerfil());
-			statement.setString(7, obj.getSexo());
+			PreparedStatement statement = preparaStringSqlGravar(obj, idUserLogado);
 
 			statement.execute();
 			connection.commit();
@@ -48,16 +132,8 @@ public class DAOUsuarioRepository {
 			}
 
 		} else { // atualiza usuário existente
-			String sql = "UPDATE model_login SET senha=?, login=?, nome=?, email=?, perfil=?, sexo=? WHERE id=?";
-			PreparedStatement statement = connection.prepareStatement(sql);
 
-			statement.setString(1, obj.getSenha());
-			statement.setString(2, obj.getLogin());
-			statement.setString(3, obj.getNome());
-			statement.setString(4, obj.getEmail());
-			statement.setString(5, obj.getPerfil());
-			statement.setString(6, obj.getSexo());
-			statement.setLong(7, obj.getId());
+			PreparedStatement statement = preparaStringSqlUpdate(obj);
 
 			statement.executeUpdate();
 			connection.commit();
@@ -65,6 +141,7 @@ public class DAOUsuarioRepository {
 			if (obj.getFotoUser() != null && !obj.getFotoUser().isEmpty()) {
 
 				sql = "update model_login set fotouser=?, extensaofotouser=? where id=?";
+				statement = connection.prepareStatement(sql);
 
 				statement.setString(1, obj.getFotoUser());
 				statement.setString(2, obj.getExtensaoFotoUser());
@@ -91,18 +168,27 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		while (resultado.next()) {
-			ModelLogin user = new ModelLogin();
+			ModelLogin modelLogin = new ModelLogin();
 
-			user.setEmail(resultado.getString("email"));
-			user.setId(resultado.getLong("id"));
-			user.setLogin(resultado.getString("login"));
-			user.setNome(resultado.getString("nome"));
-			user.setUserAdmin(resultado.getBoolean("useradmin"));
-			user.setPerfil(resultado.getString("perfil"));
-			user.setSexo(resultado.getString("sexo"));
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+			/*
+			 * modelLogin.setEmail(resultado.getString("email"));
+			 * modelLogin.setId(resultado.getLong("id"));
+			 * modelLogin.setLogin(resultado.getString("login"));
+			 * modelLogin.setNome(resultado.getString("nome"));
+			 * modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
+			 * modelLogin.setPerfil(resultado.getString("perfil"));
+			 * modelLogin.setSexo(resultado.getString("sexo"));
+			 * modelLogin.setCep(resultado.getString("cep"));
+			 * modelLogin.setLogradouro(resultado.getString("logradouro"));
+			 * modelLogin.setBairro(resultado.getString("bairro"));
+			 * modelLogin.setLocalidade(resultado.getString("localidade"));
+			 * modelLogin.setUf(resultado.getString("uf"));
+			 * modelLogin.setNumero(resultado.getString("numero"));
+			 */
 			// user.setSenha(resultado.getString("senha"));
 
-			usuarios.add(user);
+			usuarios.add(modelLogin);
 		}
 
 		return usuarios;
@@ -110,12 +196,7 @@ public class DAOUsuarioRepository {
 
 	public List<ModelLogin> buscarUsuarios(Long idUserLogado) throws Exception {
 		List<ModelLogin> usuarios = new ArrayList<ModelLogin>();
-		String sql = "select * from model_login where useradmin is false and usuario_id = ? order by id asc"; // consulta
-																												// sql
-																												// ordenada
-																												// por
-																												// id
-																												// crescente
+		String sql = "select * from model_login where useradmin is false and usuario_id = ? order by id asc";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setLong(1, idUserLogado);
@@ -123,18 +204,12 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		while (resultado.next()) {
-			ModelLogin user = new ModelLogin();
+			ModelLogin modelLogin = new ModelLogin();
 
-			user.setEmail(resultado.getString("email"));
-			user.setId(resultado.getLong("id"));
-			user.setLogin(resultado.getString("login"));
-			user.setNome(resultado.getString("nome"));
-			user.setUserAdmin(resultado.getBoolean("useradmin"));
-			user.setPerfil(resultado.getString("perfil"));
-			user.setSexo(resultado.getString("sexo"));
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
 			// user.setSenha(resultado.getString("senha"));
 
-			usuarios.add(user);
+			usuarios.add(modelLogin);
 		}
 
 		return usuarios;
@@ -149,14 +224,9 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			modelLogin.setEmail(resultado.getString("email"));
-			modelLogin.setId(resultado.getLong("id"));
-			modelLogin.setLogin(resultado.getString("login"));
-			modelLogin.setNome(resultado.getString("nome"));
-			modelLogin.setSenha(resultado.getString("senha"));
-			modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
-			modelLogin.setPerfil(resultado.getString("perfil"));
-			modelLogin.setSexo(resultado.getString("sexo"));
+
+			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
+			
 		}
 
 		return modelLogin;
@@ -170,14 +240,7 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			modelLogin.setEmail(resultado.getString("email"));
-			modelLogin.setId(resultado.getLong("id"));
-			modelLogin.setLogin(resultado.getString("login"));
-			modelLogin.setNome(resultado.getString("nome"));
-			modelLogin.setSenha(resultado.getString("senha"));
-			modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
-			modelLogin.setPerfil(resultado.getString("perfil"));
-			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
 		}
 
 		return modelLogin;
@@ -191,14 +254,9 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			modelLogin.setEmail(resultado.getString("email"));
-			modelLogin.setId(resultado.getLong("id"));
-			modelLogin.setLogin(resultado.getString("login"));
-			modelLogin.setNome(resultado.getString("nome"));
-			modelLogin.setSenha(resultado.getString("senha"));
-			modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
-			modelLogin.setPerfil(resultado.getString("perfil"));
-			modelLogin.setSexo(resultado.getString("sexo"));
+			
+			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
+			
 		}
 
 		return modelLogin;
@@ -214,14 +272,9 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			modelLogin.setEmail(resultado.getString("email"));
-			modelLogin.setId(resultado.getLong("id"));
-			modelLogin.setLogin(resultado.getString("login"));
-			modelLogin.setNome(resultado.getString("nome"));
-			modelLogin.setSenha(resultado.getString("senha"));
-			modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
-			modelLogin.setPerfil(resultado.getString("perfil"));
-			modelLogin.setSexo(resultado.getString("sexo"));
+			
+			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
+			
 		}
 
 		return modelLogin;

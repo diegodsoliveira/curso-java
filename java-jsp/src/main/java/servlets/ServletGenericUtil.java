@@ -1,10 +1,15 @@
 package servlets;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
+import connection.SingleConnectionBanco;
 import dao.DAOUsuarioRepository;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import model.ModelLogin;
 
 public class ServletGenericUtil extends HttpServlet implements Serializable {
 
@@ -18,5 +23,5 @@ public class ServletGenericUtil extends HttpServlet implements Serializable {
 		
 		return daoUsuarioRepository.consultaUsuarioLogado(usuarioLogado).getId();
 	}
-
+	
 }

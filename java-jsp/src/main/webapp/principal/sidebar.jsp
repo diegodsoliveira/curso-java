@@ -38,7 +38,7 @@
 				<i class="ti-home"></i><b>D</b></span> <span class="pcoded-mtext" data-i18n="nav.dash.main">Dashboard</span> <span class="pcoded-mcaret"></span>
 			</a></li>
 			<li class="pcoded-hasmenu"><a href="javascript:void(0)" class="waves-effect waves-dark"> <span class="pcoded-micon">
-				<i class="ti-layout-grid2-alt"></i></span> <span class="pcoded-mtext" data-i18n="nav.basic-components.main">Components</span> <span class="pcoded-mcaret"></span>
+				<i class="ti-layout-grid2-alt"></i></span> <span class="pcoded-mtext" data-i18n="nav.basic-components.main">Opções</span> <span class="pcoded-mcaret"></span>
 			</a>
 				<ul class="pcoded-submenu">
 				  <c:if test="${perfil == 'ADMIN'}">
@@ -61,67 +61,8 @@
 							data-i18n="nav.basic-components.alert">Button</span> <span
 							class="pcoded-mcaret"></span>
 					</a></li>
-					<li class=" "><a href="tabs.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.breadcrumbs">Tabs</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
-					<li class=" "><a href="color.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.alert">Color</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
-					<li class=" "><a href="label-badge.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.breadcrumbs">Label Badge</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
-					<li class=" "><a href="tooltip.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.alert">Tooltip</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
-					<li class=" "><a href="typography.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.breadcrumbs">Typography</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
-					<li class=" "><a href="notification.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.alert">Notification</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
-					<li class=" "><a href="icon-themify.html"
-						class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-								class="ti-angle-right"></i></span> <span class="pcoded-mtext"
-							data-i18n="nav.basic-components.breadcrumbs">Themify</span> <span
-							class="pcoded-mcaret"></span>
-					</a></li>
 
 				</ul></li>
-		</ul>
-		<div class="pcoded-navigation-label" data-i18n="nav.category.forms">Forms
-			&amp; Tables</div>
-		<ul class="pcoded-item pcoded-left-item">
-			<li><a href="form-elements-component.html"
-				class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-						class="ti-layers"></i><b>FC</b></span> <span class="pcoded-mtext"
-					data-i18n="nav.form-components.main">Form Components</span> <span
-					class="pcoded-mcaret"></span>
-			</a></li>
-			<li><a href="bs-basic-table.html"
-				class="waves-effect waves-dark"> <span class="pcoded-micon"><i
-						class="ti-layers"></i><b>FC</b></span> <span class="pcoded-mtext"
-					data-i18n="nav.form-components.main">Basic Table</span> <span
-					class="pcoded-mcaret"></span>
-			</a></li>
-
 		</ul>
 
 		<div class="pcoded-navigation-label" data-i18n="nav.category.forms">Chart
