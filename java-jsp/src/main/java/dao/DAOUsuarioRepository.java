@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.StatementEvent;
-
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
 
@@ -83,30 +81,34 @@ public class DAOUsuarioRepository {
 		objeto.setLocalidade(resultado.getString("localidade"));
 		objeto.setUf(resultado.getString("uf"));
 		objeto.setNumero(resultado.getString("numero"));
+		objeto.setFotoUser(resultado.getString("fotouser"));
+		objeto.setExtensaoFotoUser(resultado.getString("extensaofotouser"));
 
 		return objeto;
 	}
 	
-	public ModelLogin setaCamposConsultaComFoto(ModelLogin objeto, ResultSet resultado) throws Exception {
+	public int totalPagina(Long usuarioLogado) throws Exception {
+		String sql = "select count(1) as total from model_login where usuario_id = " + usuarioLogado;
+		PreparedStatement statement = connection.prepareStatement(sql);
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		resultado.next();
 
-		objeto.setEmail(resultado.getString("email"));
-		objeto.setId(resultado.getLong("id"));
-		objeto.setLogin(resultado.getString("login"));
-		objeto.setNome(resultado.getString("nome"));
-		objeto.setSenha(resultado.getString("senha"));
-		objeto.setUserAdmin(resultado.getBoolean("useradmin"));
-		objeto.setPerfil(resultado.getString("perfil"));
-		objeto.setSexo(resultado.getString("sexo"));
-		objeto.setFotoUser(resultado.getString("fotouser"));
-		objeto.setExtensaoFotoUser(resultado.getString("extensaofotouser"));
-		objeto.setCep(resultado.getString("cep"));
-		objeto.setLogradouro(resultado.getString("logradouro"));
-		objeto.setBairro(resultado.getString("bairro"));
-		objeto.setLocalidade(resultado.getString("localidade"));
-		objeto.setUf(resultado.getString("uf"));
-		objeto.setNumero(resultado.getString("numero"));
-
-		return objeto;
+		Double cadastros = resultado.getDouble("total");
+		
+		Double porPagina = 5.0;
+		
+		Double pagina = cadastros / porPagina;
+		
+		Double resto = pagina % 2;
+		
+		if (resto > 0) {
+			pagina++;
+		}
+		
+		return pagina.intValue();
+		
 	}
 
 	public ModelLogin gravarUsuario(ModelLogin obj, Long idUserLogado) throws Exception {
@@ -159,7 +161,7 @@ public class DAOUsuarioRepository {
 	public List<ModelLogin> buscarUsuarios(String nomeUser, Long idUserLogado) throws Exception {
 		List<ModelLogin> usuarios = new ArrayList<>();
 		String sql = "select * from model_login where upper(nome) like upper(?) and useradmin is false and usuario_id = "
-				+ idUserLogado;
+				+ idUserLogado + "limit 5";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -171,22 +173,6 @@ public class DAOUsuarioRepository {
 			ModelLogin modelLogin = new ModelLogin();
 
 			modelLogin = setaCamposConsulta(modelLogin, resultado);
-			/*
-			 * modelLogin.setEmail(resultado.getString("email"));
-			 * modelLogin.setId(resultado.getLong("id"));
-			 * modelLogin.setLogin(resultado.getString("login"));
-			 * modelLogin.setNome(resultado.getString("nome"));
-			 * modelLogin.setUserAdmin(resultado.getBoolean("useradmin"));
-			 * modelLogin.setPerfil(resultado.getString("perfil"));
-			 * modelLogin.setSexo(resultado.getString("sexo"));
-			 * modelLogin.setCep(resultado.getString("cep"));
-			 * modelLogin.setLogradouro(resultado.getString("logradouro"));
-			 * modelLogin.setBairro(resultado.getString("bairro"));
-			 * modelLogin.setLocalidade(resultado.getString("localidade"));
-			 * modelLogin.setUf(resultado.getString("uf"));
-			 * modelLogin.setNumero(resultado.getString("numero"));
-			 */
-			// user.setSenha(resultado.getString("senha"));
 
 			usuarios.add(modelLogin);
 		}
@@ -196,10 +182,32 @@ public class DAOUsuarioRepository {
 
 	public List<ModelLogin> buscarUsuarios(Long idUserLogado) throws Exception {
 		List<ModelLogin> usuarios = new ArrayList<ModelLogin>();
-		String sql = "select * from model_login where useradmin is false and usuario_id = ? order by id asc";
+		String sql = "select * from model_login where useradmin is false and usuario_id = ? order by nome asc limit 5";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setLong(1, idUserLogado);
+
+		ResultSet resultado = statement.executeQuery();
+
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+			// user.setSenha(resultado.getString("senha"));
+
+			usuarios.add(modelLogin);
+		}
+
+		return usuarios;
+	}
+	
+	public List<ModelLogin> buscarUsuariosPaginado(Long idUserLogado, Integer offset) throws Exception {
+		List<ModelLogin> usuarios = new ArrayList<ModelLogin>();
+		String sql = "select * from model_login where useradmin is false and usuario_id = ? order by nome asc offset ? limit 5";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setLong(1, idUserLogado);
+		statement.setInt(2, offset);
 
 		ResultSet resultado = statement.executeQuery();
 
@@ -225,8 +233,8 @@ public class DAOUsuarioRepository {
 
 		if (resultado.next()) {
 
-			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
-			
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+
 		}
 
 		return modelLogin;
@@ -240,7 +248,7 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
 		}
 
 		return modelLogin;
@@ -254,9 +262,9 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			
-			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
-			
+
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+
 		}
 
 		return modelLogin;
@@ -272,9 +280,9 @@ public class DAOUsuarioRepository {
 		ResultSet resultado = statement.executeQuery();
 
 		if (resultado.next()) {
-			
-			modelLogin = setaCamposConsultaComFoto(modelLogin, resultado);
-			
+
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+
 		}
 
 		return modelLogin;

@@ -255,6 +255,20 @@
 																</c:forEach>
 															</tbody>
 														</table>
+														<nav aria-label="Page navigation example">
+														  <ul class="pagination justify-content-center">
+														  
+														  	<%
+														  	
+														  		int paginas = (int) request.getAttribute("totalPagina");
+														  	
+														  		for (int i = 0; i < paginas; i++) {
+														  			String url = request.getContextPath() + "/ServletUsuarioController?acao=paginar&offset=" + (i * 5);
+														  			out.print("<li class=\"page-item\"><a class=\"page-link\" href=\""+url+"\">"+(i+1)+"</a></li>");
+														  		}
+														  	%>
+														  </ul>
+														</nav>
 													</div>
 												</div>
 											</div>
@@ -443,7 +457,7 @@
 
 		function limparCampos() {
 			var elementos = document.getElementById('formUser').elements /*Retorna os elementos html dentro do form*/
-			document.getElementById('fotoBase64').src=null;
+			document.getElementById('fotoBase64').src="assets/images/avatar-1.jpg";
 			for (p = 0; p < elementos.length; p++) {
 				elementos[p].value = ''
 			}

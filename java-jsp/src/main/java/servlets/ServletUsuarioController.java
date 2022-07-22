@@ -3,7 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.tomcat.jakartaee.commons.compress.utils.IOUtils;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
@@ -44,6 +44,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				request.setAttribute("modelLogins", modelLogins);
 
 				request.setAttribute("msg", "Excluído com sucesso.");
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("deletarAjax")) {
@@ -77,6 +78,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
@@ -86,6 +88,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 				request.setAttribute("msg", "Usuarios carregados");
 				request.setAttribute("modelLogins", modelLogins);
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("downloadFoto")) {
@@ -96,14 +99,25 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				if (modelLogin.getFotoUser() != null && !modelLogin.getFotoUser().isEmpty()) {
 					
 					response.setHeader("Content-Disposition", "attachment;filename=arquivo." + modelLogin.getExtensaoFotoUser()); // seta o cabeçalho da requisição
-					response.getOutputStream().write(new Base64().decodeBase64(modelLogin.getFotoUser().split("\\,")[1])); // transforma a String em imagem e remove sujeira
+					new Base64();
+					response.getOutputStream().write(Base64.decodeBase64(modelLogin.getFotoUser().split("\\,")[1])); // transforma a String em imagem e remove sujeira
 					
 				}
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("paginar")) {
+				Integer offset = Integer.parseInt(request.getParameter("offset"));
+				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuariosPaginado(this.getUserLogado(request), offset);
+				
+				request.setAttribute("modelLogins", modelLogins);
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+				
 			}
 
 			else {
 				List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 
@@ -158,8 +172,9 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				if (part.getSize() > 0) {
 					
 					byte[] foto = IOUtils.toByteArray(part.getInputStream()); // conver imagem para byte
+					new Base64();
 					String imagemBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64,"
-							+ new Base64().encodeBase64String(foto);
+							+ Base64.encodeBase64String(foto);
 					
 					modelLogin.setFotoUser(imagemBase64);
 					modelLogin.setExtensaoFotoUser(part.getContentType().split("\\/")[1]);
@@ -186,6 +201,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 			List<ModelLogin> modelLogins = daoUsuarioRepository.buscarUsuarios(super.getUserLogado(request));
 			request.setAttribute("modelLogins", modelLogins);
+			request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 
 			request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
