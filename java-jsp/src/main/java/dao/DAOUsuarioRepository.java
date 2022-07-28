@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,6 +221,58 @@ public class DAOUsuarioRepository {
 
 		return usuarios;
 	}
+	
+	public List<ModelLogin> consultaUsuarioListOffSet(String nome, Long userLogado, int offset) throws Exception {
+		
+		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
+		
+		String sql = "select * from model_login  where upper(nome) like upper(?) and useradmin is false and usuario_id = ? offset "+offset+" limit 5";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, "%" + nome + "%");
+		statement.setLong(2, userLogado);
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		while (resultado.next()) { /*percorrer as linhas de resultado do SQL*/
+			
+			ModelLogin modelLogin = new ModelLogin();
+			
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+			
+			retorno.add(modelLogin);
+		}
+		
+		
+		return retorno;
+	}
+	
+	public int consultaUsuarioListTotalPaginaPaginacao(String nome, Long userLogado) throws Exception {
+		
+		String sql = "select count(1) as total from model_login  where upper(nome) like upper(?) and useradmin is false and usuario_id = ? ";
+	
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, "%" + nome + "%");
+		statement.setLong(2, userLogado);
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		resultado.next();
+		
+		Double cadastros = resultado.getDouble("total");
+		
+		Double porpagina = 5.0;
+		
+		Double pagina = cadastros / porpagina;
+		
+		Double resto = pagina % 2;
+		
+		if (resto > 0) {
+			pagina ++;
+		}
+		
+		return pagina.intValue();
+		
+	}
 
 	public ModelLogin consultaUsuario(String login, Long idUserLogado) throws Exception {
 		ModelLogin modelLogin = new ModelLogin();
@@ -239,6 +290,26 @@ public class DAOUsuarioRepository {
 
 		return modelLogin;
 	}
+	
+	public ModelLogin consultaUsuarioID(Long id) throws Exception {
+		ModelLogin modelLogin = new ModelLogin();
+		
+		String sql = "select * from model_login where id=? and useradmin is false";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setLong(1, id);
+		
+		ResultSet resultado = statement.executeQuery();
+
+		if (resultado.next()) {
+
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+
+		}
+
+		return modelLogin;
+	}
+
 
 	public ModelLogin consultaUsuario(String login) throws Exception {
 		ModelLogin modelLogin = new ModelLogin();

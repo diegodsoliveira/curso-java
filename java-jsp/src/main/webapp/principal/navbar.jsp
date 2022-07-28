@@ -1,4 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="model.ModelLogin"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <nav class="navbar header-navbar pcoded-header">
 				<div class="navbar-wrapper">
 					<div class="navbar-logo">
@@ -53,7 +58,7 @@
 							</a>
 								<ul class="show-notification">
 									<li>
-										<h6>Notifications</h6> <label class="label label-danger">New</label>
+										<h6>Novidades</h6> <label class="label label-danger">Novo</label>
 									</li>
 									<li class="waves-effect waves-light">
 										<div class="media">
@@ -95,32 +100,34 @@
 										</div>
 									</li>
 								</ul></li>
-							<li class="user-profile header-notification"><a href="#!"
-								class="waves-effect waves-light"> <img
-									src="<%= request.getContextPath() %>/assets/images/avatar-4.jpg" class="img-radius"
-									alt="User-Profile-Image"> <span><%= session.getAttribute("usuario") %></span> <i
-									class="ti-angle-down"></i>
-							</a>
+							<li class="user-profile header-notification">
+								<a href="#!" class="waves-effect waves-light">
+												<span><%= session.getAttribute("usuario") %></span> <i class="ti-angle-down"></i>
+								</a>
+								<!-- 
+								
+									<img src="<%= request.getContextPath() %>/assets/images/avatar-4.jpg" class="img-radius"
+										alt="User-Profile-Image"> <span><%= session.getAttribute("usuario") %></span> <i class="ti-angle-down"></i></a>
+								 --> 
+											
 								<ul class="show-notification profile-notification">
-									<li class="waves-effect waves-light"><a href="#!"> <i
-											class="ti-settings"></i> Settings
-									</a></li>
-									<li class="waves-effect waves-light"><a
-										href="user-profile.html"> <i class="ti-user"></i> Profile
-									</a></li>
-									<li class="waves-effect waves-light"><a
-										href="email-inbox.html"> <i class="ti-email"></i> My
-											Messages
-									</a></li>
-									<li class="waves-effect waves-light"><a
-										href="auth-lock-screen.html"> <i class="ti-lock"></i> Lock
-											Screen
-									</a></li>
-									<li class="waves-effect waves-light"><a
-										href="<%= request.getContextPath() %>/ServletLogin?acao=Logout"> <i
-											class="ti-layout-sidebar-left"></i> Logout
-									</a></li>
-								</ul></li>
+									<!-- <li class="waves-effect waves-light">
+										<a href="#!"><i class="ti-settings"></i>Settings</a>
+									</li>
+									<li class="waves-effect waves-light">
+										<a href="user-profile.html"> <i class="ti-user"></i> Profile</a>
+									</li>
+									<li class="waves-effect waves-light">
+										<a href="email-inbox.html"> <i class="ti-email"></i> My Messages </a>
+									</li>
+									<li class="waves-effect waves-light">
+										<a href="auth-lock-screen.html"> <i class="ti-lock"></i> Lock Screen</a>
+									</li>  -->
+									<li class="waves-effect waves-light">
+										<a href="<%= request.getContextPath() %>/ServletLogin?acao=Logout"> <i class="ti-layout-sidebar-left"></i> Sair </a>
+									</li>
+								</ul>
+							</li>
 						</ul>
 					</div>
 				</div>

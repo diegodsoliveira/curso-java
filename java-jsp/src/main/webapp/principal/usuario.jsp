@@ -1,6 +1,5 @@
 <%@page import="model.ModelLogin"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
@@ -112,7 +111,7 @@
 																</div>
 															</div>
 
-															<div class="form-group row form-static-label"">
+															<div class="form-group row form-static-label">
 																<label class="col-sm-2">Sexo: </label>
 																<div class="col-sm-4">
 																<input type="radio" class="" name="sexo" value="MASCULINO" checked="checked"
@@ -184,7 +183,7 @@
 																class="form-group row form-default form-static-label">
 																<label class="col-sm-2 col-form-label">Número</label>
 																<div class="col-sm-4">
-																	<input type="text" class="form-control" name="numero"
+																	<input type="number" class="form-control" name="numero"
 																		id="numero" value="${modelusuario.numero}" />
 																</div>
 																<label class="col-sm-2 col-form-label">Bairro</label>
@@ -213,6 +212,9 @@
 															<button
 																class="btn btn-mat waves-effect waves-light btn-success">
 																Salvar</button>
+															<c:if test="${modelusuario.id != null && modelusuario.id > 0}">
+																<a href="<%= request.getContextPath() %>/ServletTelefone?idUser=${modelusuario.id}" class="btn btn-primary">Telefone</a>
+															</c:if>
 															<button type="button"
 																class="btn btn-mat waves-effect waves-light btn-danger"
 																onclick="criarDeleteAjax();">Excluir</button>
@@ -234,11 +236,12 @@
 													<div class="card-block">
 														<table class="table table-hover" id="tableResultadoView">
 															<thead>
-																<tr>
+																<tr class="bg-primary">
 																	<th>id</th>
 																	<th>Nome</th>
 																	<th>Email</th>
 																	<th>Ver</th>
+																	<th>Deletar</th>
 																</tr>
 															</thead>
 															<tbody>
@@ -291,7 +294,7 @@
 	<!-- Modal -->
 	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog" role="document" style="max-width: 50%">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
@@ -311,20 +314,25 @@
 								onclick="buscarUsuario();">Buscar</button>
 						</div>
 					</div>
-					<div style="height: 350px; overflow: scroll;">
+					<div style="max-height: 50%; overflow: scroll;">
 						<table class="table" id="tableResultado">
 							<thead>
-								<tr>
+								<tr class="bg-primary">
 									<th scope="col">id</th>
 									<th scope="col">Nome</th>
 									<th scope="col">Email</th>
-									<th scope="col">Ver</th>
+									<th scope="col">Editar</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
 						</table>
 					</div>
 					<span id="totalUsuarios"></span>
+					<nav aria-label="Page navigation example">
+						<ul class="pagination" id="ulPaginacaoUserAjax">
+
+						</ul>
+					</nav>	
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
@@ -335,6 +343,11 @@
 	</div>
 
 	<script type="text/javascript">
+	$("#cep,#numero").keypress(function(event) {
+		return /\d/.test(String.fromCharCode(event.keyCode))
+	});
+	
+	
 		function pesquisaCep() {
 			var cep = $("#cep").val();
 
@@ -378,6 +391,56 @@
 			window.location.href = urlAction + '?acao=buscarEditar&id=' + id
 
 		}
+		
+		function buscaUserPageAjax(url){
+			   
+		    
+		    var urlAction = document.getElementById('formUser').action;
+		    var nomeBusca = document.getElementById('inputNomeBusca').value;
+		    
+			 $.ajax({	     
+			     method: "get",
+			     url : urlAction,
+			     data : url
+					})
+						.done(function(response, textStatus, xhr) {
+				 
+								var lista = JSON.parse(response);
+								
+								$('#tableResultado > tbody > tr').remove();
+								$("#ulPaginacaoUserAjax > li").remove();
+							
+								for(var i = 0; i < lista.length; i++){
+										$('#tableResultado > tbody')
+											.append(
+														'<tr><td>'
+																+ lista[i].id
+																+ '</td> <td>'
+																+ lista[i].nome
+																+ '</td><td>'
+																+ lista[i].email
+																+ '</td><td><button onclick="verEditar('
+																+ lista[i].id
+																+ ')" type="button" class="btn btn-info">ver</button></td></tr>')
+								}
+								
+								document.getElementById('totalUsuarios').textContent = 'Total de registros: ' + lista.length;
+								
+									var totalPagina = xhr.getResponseHeader('totalPagina');
+									
+									for (var p = 0; p < totalPagina; p++){
+											
+											var url = 'inputNomeBusca=' + nomeBusca + '&acao=buscarUserAjaxPage&pagina='+ (p * 5);
+									
+											$("#ulPaginacaoUserAjax").append('<li class="page-item"><a class="page-link" href="#" onclick="buscaUserPageAjax(\''+url+'\')">'+ (p + 1) +'</a></li>'); 
+											
+									}
+				 
+					}).fail(function(xhr, status, errorThrown){
+							alert('Erro ao buscar usuário por nome: ' + xhr.responseText);
+					});
+		    
+		}
 
 		function buscarUsuario() {
 			var dadoInput = document.getElementById('inputNomeBusca').value
@@ -394,10 +457,11 @@
 											+ '&acao=buscarUser'
 								})
 						.done(
-								function(response) {
+								function(response, textStatus, xhr) {
 									var lista = JSON.parse(response)
 
 									$('#tableResultado > tbody > tr').remove()
+									$('#ulPaginacaoUserAjax > li').remove()
 
 									for (var i = 0; i < lista.length; i++) {
 										$('#tableResultado > tbody')
@@ -412,8 +476,17 @@
 																+ lista[i].id
 																+ ')" type="button" class="btn btn-info">ver</button></td></tr>')
 									}
-									document.getElementById('totalUsuarios').textContent = 'Usuários encontrados: '
-											+ lista.length
+									document.getElementById("totalUsuarios").textContent = 'Total de registros: '+ lista.length
+											
+									var totalPagina = xhr.getResponseHeader("totalPagina")
+
+									for (var p = 0; p < totalPagina; p++){
+									      
+									      var url = 'inputNomeBusca=' + dadoInput + '&acao=buscarUserAjaxPage&pagina='+ (p * 5)
+									   
+									      $("#ulPaginacaoUserAjax").append('<li class="page-item"><a class="page-link" href="#" onclick="buscaUserPageAjax(\''+url+'\')">'+ (p + 1) +'</a></li>');
+									      
+									}
 
 								}).fail(
 								function(xhr, status, errorThrown) {

@@ -30,3 +30,21 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.model_login
     OWNER to postgres;
+    
+    
+CREATE TABLE IF NOT EXISTS public.telefone
+(
+    id integer NOT NULL DEFAULT nextval('telefone_seq'::regclass),
+    numero character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    usuario_pai_id bigint NOT NULL,
+    usuario_cad_id bigint NOT NULL,
+    CONSTRAINT telefone_pkey PRIMARY KEY (id),
+    CONSTRAINT usuario_cad_fk FOREIGN KEY (usuario_cad_id)
+        REFERENCES public.model_login (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT usuario_pai_fk FOREIGN KEY (usuario_pai_id)
+        REFERENCES public.model_login (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
