@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -78,7 +80,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				 ObjectMapper mapper = new ObjectMapper();
 				 
 				 String json = mapper.writeValueAsString(dadosJsonUser);
-				 
+
 				 response.addHeader("totalPagina", String.valueOf(daoUsuarioRepository.consultaUsuarioListTotalPaginaPaginacao(nomeBusca, super.getUserLogado(request))));
 				 response.getWriter().write(json);
 				 
@@ -129,6 +131,19 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 				
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioUser")) {
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				
+				if (dataInicial == null || dataInicial.isEmpty()
+						&& dataFinal == null || dataFinal.isEmpty()) {
+					  request.setAttribute("listaUser", daoUsuarioRepository.buscarUsuariosRel(super.getUserLogado(request)));
+				}
+				
+				request.setAttribute("dataInicial", dataInicial);
+				request.setAttribute("dataFinal", dataFinal);
+				
+				request.getRequestDispatcher("principal/relUsuario.jsp").forward(request, response);
 			}
 
 			else {
@@ -167,6 +182,10 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			String bairro = request.getParameter("bairro");
 			String localidade = request.getParameter("localidade");
 			String uf = request.getParameter("uf");
+			String dataNascimento = request.getParameter("dataNascimento");
+			String rendaMensal = request.getParameter("rendamensal");
+			
+			rendaMensal = rendaMensal.split("\\ ")[1].replaceAll("\\.", "").replaceAll(",", ".");
 
 			ModelLogin modelLogin = new ModelLogin();
 			modelLogin.setId(id != null && !id.isEmpty() ? Long.valueOf(id) : null);
@@ -182,6 +201,8 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			modelLogin.setBairro(bairro);
 			modelLogin.setLocalidade(localidade);
 			modelLogin.setUf(uf);
+			modelLogin.setDataNascimento(Date.valueOf(new SimpleDateFormat("yyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataNascimento))));
+			modelLogin.setRendamensal(Double.parseDouble(rendaMensal));
 			
 			if (ServletFileUpload.isMultipartContent(request)) {
 				Part part = request.getPart("fileFoto"); // pega a foto da tela

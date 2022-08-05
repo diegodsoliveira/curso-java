@@ -86,7 +86,7 @@ public class ServletTelefone extends ServletGenericUtil {
 			
 			if (numero != null && !numero.isEmpty()) {
 				
-				if (daoTelefoneRepository.isTelefoneIgual(numero)) {
+				if (daoTelefoneRepository.isTelefoneIgual(numero,usuario_pai_id)) {
 					
 					
 					request.setAttribute("modelLogin", modelLogin);

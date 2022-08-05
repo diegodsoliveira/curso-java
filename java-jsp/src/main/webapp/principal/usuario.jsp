@@ -85,15 +85,30 @@
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="nome" id="nome"
 																	class="form-control" value="${modelusuario.nome}" /> <span
-																	class="form-bar"></span> <label class="float-label">Insira
+																	class="form-bar"></span> <label class="float-label" style="color:black">Insira
 																	seu nome</label>
 															</div>
 															<div class="form-group form-default form-static-label">
 																<input type="email" name="email" id="email"
 																	class="form-control" required="required"
 																	autocomplete="off" value="${modelusuario.email}" /> <span
-																	class="form-bar"></span> <label class="float-label">Email
-																	(exa@gmail.com)</label>
+																	class="form-bar"></span> <label class="float-label" style="color:black">Email
+																	(example@gmail.com)</label>
+															</div>
+															<div class="form-group row form-static-label">
+																<label class="col-sm-2 col-form-label" style="color:black">Nascimento</label>
+																<div class="col-sm-4">
+																	<input type="text" name="dataNascimento" id="dataNascimento"
+																		class="form-control" required="required"
+																		autocomplete="off" value="${modelusuario.dataNascimento}" /> <span
+																		class="form-bar"></span>
+																</div>
+																<label class="col-sm-2 col-form-label">Renda</label>
+																<div class="col-sm-4">
+																	<input type="text" name="rendamensal" id="rendamensal"
+																			class="form-control" required="required"
+																			autocomplete="off" value="${modelusuario.rendamensal}" />
+																</div>
 															</div>
 															<div class="form-group row form-static-label">
 																<label class="col-sm-2 col-form-label">Login</label>
@@ -135,7 +150,7 @@
 																</div>
 																<label class="col-sm-2">Perfil</label>
 																<div class="col-sm-4">
-																	<select name="perfil" class="form-control">
+																	<select name="perfil" class="form-control" required="required">
 																		<option selected="selected">[Selecione o perfil]</option>
 																		<option value="ADMIN"
 																			<%modelLogin = (ModelLogin) request.getAttribute("modelusuario");
@@ -170,13 +185,13 @@
 																	<input type="text" pattern="\d{5}-?\d{3}"
 																		title="Apenas números com 8 caracteres"
 																		onblur="pesquisaCep()" class="form-control" name="cep"
-																		id="cep" value="${modelusuario.cep}" />
+																		id="cep" value="${modelusuario.cep}" required="required"/>
 																</div>
 																<label class="col-sm-2 col-form-label">Logradouro</label>
 																<div class="col-sm-6">
 																	<input type="text" class="form-control"
 																		name="logradouro" id="logradouro"
-																		value="${modelusuario.logradouro}" />
+																		value="${modelusuario.logradouro}" required="required"/>
 																</div>
 															</div>
 															<div
@@ -184,12 +199,12 @@
 																<label class="col-sm-2 col-form-label">Número</label>
 																<div class="col-sm-4">
 																	<input type="number" class="form-control" name="numero"
-																		id="numero" value="${modelusuario.numero}" />
+																		id="numero" value="${modelusuario.numero}" required="required"/>
 																</div>
 																<label class="col-sm-2 col-form-label">Bairro</label>
 																<div class="col-sm-4">
 																	<input type="text" class="form-control" name="bairro"
-																		id="bairro" value="${modelusuario.bairro}" />
+																		id="bairro" value="${modelusuario.bairro}" required="required"/>
 																</div>
 															</div>
 															<div
@@ -198,12 +213,12 @@
 																<div class="col-sm-4">
 																	<input type="text" class="form-control"
 																		name="localidade" id="localidade"
-																		value="${modelusuario.localidade}" />
+																		value="${modelusuario.localidade}" required="required"/>
 																</div>
 																<label class="col-sm-2 col-form-label">UF</label>
 																<div class="col-sm-4">
 																	<input type="text" class="form-control" name="uf"
-																		id="uf" value="${modelusuario.uf}" />
+																		id="uf" value="${modelusuario.uf}" required="required"/>
 																</div>
 															</div>
 
@@ -343,10 +358,41 @@
 	</div>
 
 	<script type="text/javascript">
-	$("#cep,#numero").keypress(function(event) {
-		return /\d/.test(String.fromCharCode(event.keyCode))
+	
+	$("#rendamensal").maskMoney({showSymbol:true, symbol:"R$", decimal:",", thousands:"."});
+	
+	const formatter = new Intl.NumberFormat('pt-BR', {
+		currency : 'BRL',
+		minimumFractionDigits : 2
 	});
 	
+	$("#rendamensal").val(formatter.format($("#rendamensal").val()));
+	$("#rendamensal").focus();
+	
+	var dataNascimento = $("#dataNascimento").val();
+	
+	var dateFormat = new Date(dataNascimento);
+	
+	$("#dataNascimento").val(dateFormat.toLocaleDateString('pt-BR', {timeZone: 'UTC'}));
+	$("#nome").focus();
+	
+	$( function() {
+		  
+		  $("#dataNascimento").datepicker({
+			    dateFormat: 'dd/mm/yy',
+			    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+			    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+			    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+			    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+			    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+			    nextText: 'Próximo',
+			    prevText: 'Anterior'
+			});
+	} );
+	
+		$("#cep,#numero").keypress(function(event) {
+		return /\d/.test(String.fromCharCode(event.keyCode))
+		});
 	
 		function pesquisaCep() {
 			var cep = $("#cep").val();

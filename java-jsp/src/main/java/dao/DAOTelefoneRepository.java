@@ -71,10 +71,12 @@ public class DAOTelefoneRepository {
 		connection.commit();
 	}
 
-	public boolean isTelefoneIgual(String numero) throws Exception {
-		String sql = "select count(1) > 0 as existe from telefone where numero = '" + numero + "'";
+	public boolean isTelefoneIgual(String numero, String idUser) throws Exception {
+		String sql = "select count(1) > 0 as existe from telefone where usuario_pai_id=? and numero=?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, idUser);
+		statement.setString(2, numero);
 		ResultSet resultado = statement.executeQuery();
 
 		resultado.next();
