@@ -106,8 +106,8 @@
 																<label class="col-sm-2 col-form-label">Renda</label>
 																<div class="col-sm-4">
 																	<input type="text" name="rendamensal" id="rendamensal"
-																			class="form-control" required="required"
-																			autocomplete="off" value="${modelusuario.rendamensal}" />
+																			class="form-control" autocomplete="off" 
+																			required value="${modelusuario.rendamensal}" />
 																</div>
 															</div>
 															<div class="form-group row form-static-label">
@@ -273,8 +273,8 @@
 																</c:forEach>
 															</tbody>
 														</table>
-														<nav aria-label="Page navigation example">
-														  <ul class="pagination justify-content-center">
+														<nav class="justify-content-center" aria-label="Page navigation example">
+														  <ul class="pagination ">
 														  
 														  	<%
 														  	
@@ -302,9 +302,7 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Required Jquery -->
-	<jsp:include page="javascriptfile.jsp"></jsp:include>
+	
 
 	<!-- Modal -->
 	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog"
@@ -357,24 +355,33 @@
 		</div>
 	</div>
 
+	<!-- Required Jquery -->
+	<jsp:include page="javascriptfile.jsp"></jsp:include>
 	<script type="text/javascript">
 	
-	$("#rendamensal").maskMoney({showSymbol:true, symbol:"R$", decimal:",", thousands:"."});
+	$("#rendamensal").maskMoney({showSymbol:true, prefix:"R$ ", decimal:",", thousands:"."});
 	
-	const formatter = new Intl.NumberFormat('pt-BR', {
-		currency : 'BRL',
-		minimumFractionDigits : 2
+	$("#cep,#numero").keypress(function(event) {
+		return /\d/.test(String.fromCharCode(event.keyCode))
 	});
 	
-	$("#rendamensal").val(formatter.format($("#rendamensal").val()));
-	$("#rendamensal").focus();
+	if ($("#rendamensal").val() != null && $("#rendamensal").val() != '') {
+		const formatter = new Intl.NumberFormat('pt-BR', {
+			currency : 'BRL',
+			minimumFractionDigits : 2
+		});
+		
+		$("#rendamensal").val(formatter.format($("#rendamensal").val()));
+		$("#rendamensal").focus();
+	}
 	
 	var dataNascimento = $("#dataNascimento").val();
 	
-	var dateFormat = new Date(dataNascimento);
-	
-	$("#dataNascimento").val(dateFormat.toLocaleDateString('pt-BR', {timeZone: 'UTC'}));
-	$("#nome").focus();
+	if (dataNascimento != null && dataNascimento != '') {
+		var dateFormat = new Date(dataNascimento);
+		$("#dataNascimento").val(dateFormat.toLocaleDateString('pt-BR', {timeZone: 'UTC'}));
+		$("#nome").focus();
+	}
 	
 	$( function() {
 		  
@@ -390,9 +397,7 @@
 			});
 	} );
 	
-		$("#cep,#numero").keypress(function(event) {
-		return /\d/.test(String.fromCharCode(event.keyCode))
-		});
+		
 	
 		function pesquisaCep() {
 			var cep = $("#cep").val();

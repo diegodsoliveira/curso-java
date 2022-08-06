@@ -48,46 +48,26 @@
 															method="get" id="formRel">
 															<input type="hidden" name="acao" id="acaoRelatorioImprimirTipo" value="imprimirRelatorioUser" />
 															
-															<div class="form-row align-items-center justify-content-center mb-3 border-bottom"
-																	style="box-shadow: 0px 1px 20px 0px rgb(69 90 100 / 8%);">
-															    <div class="col-auto">
+															<div class="form-row align-items-center justify-content-center mb-3 border-bottom"">
+															    <div class="col-auto my-3">
 															      <label class="col-form-label" for="dataInicial">Data Inicial</label>
 															      <input type="text" class="form-control mb-3" id="dataInicial" name="dataInicial"
 															      		value="${dataInicial}">
 															    </div>
-															    <div class="col-auto">
+															    <div class="col-auto my-3">
 															      <label class="col-form-label" for="dataFinal">Data Final</label>
 															      <input type="text" class="form-control mb-3" id="dataFinal" name="dataFinal"
 															      		value="${dataFinal}">
 															    </div>
-															    <div class="col-auto">
-															      <button type="button" onclick="imprimirHtml()" class="btn btn-primary mb-3">Imprimir relatório</button>
-															      <button type="button" onclick="imprimirPdf()" class="btn btn-danger mb-3">Gerar PDF</button>
-															      <button type="button" onclick="imprimirExcel()" class="btn btn-success mb-3">Excel</button>
+															    <div class="col-auto align-items-bottom">
+															      <button type="button" onclick="gerarGrafico()" class="btn btn-primary mb-3">Gerar gráfico</button>
 															    </div>
 														  </div>
 														</form>
 														<div class="container">
-															<table class="table table-hover table-bordered"  id="tableResultadoView">
-																<thead class="thead-light">
-																	<tr>
-																		<th scope="col">id</th>
-																		<th scope="col">Nome</th>
-																		<th scope="col">Telefones</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<c:forEach items="${listaUser}" var="listaUser">
-																		<tr>
-																			<td><c:out value="${listaUser.id}"></c:out></td>
-																			<td><c:out value="${listaUser.nome}"></c:out></td>
-																			<c:forEach items="${listaUser.telefones}" var="fone">
-																				<td class="d-flex"><c:out value="${fone.numero}"></c:out></td>
-																			</c:forEach>
-																		</tr>
-																	</c:forEach>
-																</tbody>
-															</table>
+															<div>
+																<canvas id="myChart"></canvas>
+															</div>
 														</div>
 													</div>
 												</div>
@@ -110,22 +90,32 @@
 	
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
 	<script>
-	function imprimirHtml() {
-		document.getElementById("acaoRelatorioImprimirTipo").value = 'imprimirRelatorioUser';
-		$("#formRel").submit();
-	}
 	
-	function imprimirPdf() {
-		document.getElementById("acaoRelatorioImprimirTipo").value = 'imprimirRelatorioPDF';
-		$("#formRel").submit();
-		return false;
-	}
-	
-	function imprimirExcel() {
-		document.getElementById("acaoRelatorioImprimirTipo").value = 'imprimirRelatorioExcel';
-		$("#formRel").submit();
-		return false;
-	}
+	  function gerarGrafico() {
+		  const myChart = new Chart(
+				    document.getElementById('myChart'),
+				    {
+					    type: 'bar',
+					    data: {
+						    labels: [
+							    'January',
+							    'February',
+							    'March',
+							    'April',
+							    'May',
+							    'June',
+							  ],
+						    datasets: [{
+						      label: 'Média salarial por tipo',
+						      backgroundColor: 'rgb(255, 99, 132)',
+						      borderColor: 'rgb(255, 99, 132)',
+						      data: [0, 10, 5, 2, 20, 30, 45],
+						    }]
+						  },
+					    options: {}
+					  }
+				  );
+	} 
 	
 	$( function() {
 		  

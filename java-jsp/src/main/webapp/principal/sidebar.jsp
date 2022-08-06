@@ -83,12 +83,13 @@
 					class="pcoded-mtext" data-i18n="nav.form-components.main">Usuário</span>
 					<span class="pcoded-mcaret"></span>
 			</a></li>
-			<!-- 
-			<li><a href="map-google.html" class="waves-effect waves-dark">
+			
+			<li><a href="<%= request.getContextPath() %>/principal/relUserGrafico.jsp" class="waves-effect waves-dark">
 					<span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
-					<span class="pcoded-mtext" data-i18n="nav.form-components.main">Maps</span>
+					<span class="pcoded-mtext" data-i18n="nav.form-components.main">Gráfico de Salário</span>
 					<span class="pcoded-mcaret"></span>
 			</a></li>
+			<!-- 
 			<li class="pcoded-hasmenu"><a href="javascript:void(0)"
 				class="waves-effect waves-dark"> <span class="pcoded-micon"><i
 						class="ti-layout-grid2-alt"></i></span> <span class="pcoded-mtext"

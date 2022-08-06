@@ -1,13 +1,18 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import beandto.BeanDtoGraficoSalarioUser;
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
+import model.ModelTelefone;
 
 public class DAOUsuarioRepository {
 
@@ -15,6 +20,33 @@ public class DAOUsuarioRepository {
 
 	public DAOUsuarioRepository() {
 		connection = SingleConnectionBanco.getConnection();
+	}
+	
+	public BeanDtoGraficoSalarioUser montarGraficoMediaSalario(Long userLogado) throws Exception {
+		String sql = "select avg(rendamensal) as media_salarial, perfil from model_login where usuario_id=? group by perfil";
+		
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setLong(1, userLogado);
+		
+		ResultSet retornoBanco = statement.executeQuery();
+		
+		List<String> perfis = new ArrayList<>();
+		List<Double> salarios = new ArrayList<>();
+		
+		BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = new BeanDtoGraficoSalarioUser();
+		
+		while (retornoBanco.next()) {
+			Double medial_salarial = retornoBanco.getDouble("medial_salarial");
+			String perfil = retornoBanco.getString("perfil");
+			
+			perfis.add(perfil);
+			salarios.add(medial_salarial);
+		}
+		
+		beanDtoGraficoSalarioUser.setPerfis(perfis);
+		beanDtoGraficoSalarioUser.setSalarios(salarios);
+		
+		return beanDtoGraficoSalarioUser;
 	}
 
 	public PreparedStatement preparaStringSqlGravar(ModelLogin obj, Long idUserLogado) throws Exception {
@@ -63,8 +95,8 @@ public class DAOUsuarioRepository {
 		statement.setString(11, obj.getUf());
 		statement.setString(12, obj.getNumero());
 		statement.setDate(13, obj.getDataNascimento());
-		statement.setString(15, obj.getNumero());
-		statement.setLong(16, obj.getId());
+		statement.setDouble(14, obj.getRendamensal());
+		statement.setLong(15, obj.getId());
 
 		return statement;
 	}
@@ -219,6 +251,29 @@ public class DAOUsuarioRepository {
 			ModelLogin modelLogin = new ModelLogin();
 
 			modelLogin = setaCamposConsulta(modelLogin, resultado);
+			modelLogin.setTelefones(this.listTelefone(modelLogin.getId()));
+
+			usuarios.add(modelLogin);
+		}
+
+		return usuarios;
+	}
+	public List<ModelLogin> buscarUsuariosRel(Long idUserLogado, String dataInicial, String dataFinal) throws Exception {
+		List<ModelLogin> usuarios = new ArrayList<ModelLogin>();
+		String sql = "select * from model_login where useradmin is false and usuario_id = ? and datanascimento >= ? and datanascimento <= ?";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setLong(1, idUserLogado);
+		statement.setDate(2, Date.valueOf(new SimpleDateFormat("yyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataInicial))));
+		statement.setDate(3, Date.valueOf(new SimpleDateFormat("yyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataFinal))));
+
+		ResultSet resultado = statement.executeQuery();
+
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+
+			modelLogin = setaCamposConsulta(modelLogin, resultado);
+			modelLogin.setTelefones(this.listTelefone(modelLogin.getId()));
 
 			usuarios.add(modelLogin);
 		}
@@ -403,6 +458,32 @@ public class DAOUsuarioRepository {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.executeUpdate();
 		connection.commit();
+	}
+	public List<ModelTelefone> listTelefone(Long id) throws Exception {
+
+		List<ModelTelefone> retorno = new ArrayList<>();
+
+		String sql = "select * from telefone where usuario_pai_id = ?";
+
+		PreparedStatement statement = connection.prepareStatement(sql);
+
+		statement.setLong(1, id);
+		
+		ResultSet resultado = statement.executeQuery();
+		
+		while (resultado.next()) {
+			ModelTelefone modelTelefone = new ModelTelefone();
+			
+			modelTelefone.setId(resultado.getLong("id"));
+			modelTelefone.setNumero(resultado.getString("numero"));
+			modelTelefone.setUsuario_pai_id(this.consultaUsuarioID(resultado.getLong("usuario_pai_id")));
+			modelTelefone.setUsuario_cad_id(this.consultaUsuarioID(resultado.getLong("usuario_cad_id")));
+			
+			retorno.add(modelTelefone);
+		}
+		
+		return retorno;
+
 	}
 
 }

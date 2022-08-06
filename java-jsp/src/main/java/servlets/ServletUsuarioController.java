@@ -1,8 +1,10 @@
 package servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -19,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import model.ModelLogin;
+import util.ReportUtil;
 
 @MultipartConfig
 @WebServlet(urlPatterns = { "/ServletUsuarioController" })
@@ -138,12 +141,46 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				if (dataInicial == null || dataInicial.isEmpty()
 						&& dataFinal == null || dataFinal.isEmpty()) {
 					  request.setAttribute("listaUser", daoUsuarioRepository.buscarUsuariosRel(super.getUserLogado(request)));
+				} else {
+					request.setAttribute("listaUser", daoUsuarioRepository.buscarUsuariosRel(super.getUserLogado(request), dataInicial, dataFinal));
 				}
 				
 				request.setAttribute("dataInicial", dataInicial);
 				request.setAttribute("dataFinal", dataFinal);
 				
 				request.getRequestDispatcher("principal/relUsuario.jsp").forward(request, response);
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioPDF")
+					|| acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				List<ModelLogin> modelLogins = null;
+				
+				if (dataInicial == null || dataInicial.isEmpty()
+						&& dataFinal == null || dataFinal.isEmpty()) {
+					
+					modelLogins = daoUsuarioRepository.buscarUsuariosRel(super.getUserLogado(request));
+					
+				} else {
+					modelLogins = daoUsuarioRepository.buscarUsuariosRel(super.getUserLogado(request), dataInicial, dataFinal);
+					
+				}
+				HashMap<String, Object> params = new HashMap<String, Object>();
+				params.put("param_sub_report", request.getServletContext().getRealPath("relatorio") + File.separator);
+				
+				byte[] relatorio = null;
+				String extensao = "";
+				
+				if (acao.equalsIgnoreCase("imprimirRelatorioPDF")) {
+					relatorio = new ReportUtil().geraRelatorioPdf(modelLogins, "java-jsp-report", params, request.getServletContext());
+					extensao = "pdf";
+				} else  
+					if (acao.equalsIgnoreCase("imprimirRelatorioExcel")){
+					relatorio = new ReportUtil().geraRelatorioExcel(modelLogins, "java-jsp-report", params, request.getServletContext());
+					extensao = "xls";
+				}
+				
+				response.setHeader("Content-Disposition", "attachment;filename=arquivo." + extensao); // seta o cabeçalho da requisição
+				response.getOutputStream().write(relatorio); // transforma a String em imagem e remove sujeira
 			}
 
 			else {
@@ -185,7 +222,9 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			String dataNascimento = request.getParameter("dataNascimento");
 			String rendaMensal = request.getParameter("rendamensal");
 			
-			rendaMensal = rendaMensal.split("\\ ")[1].replaceAll("\\.", "").replaceAll(",", ".");
+			if (rendaMensal != null && !rendaMensal.isEmpty()) {
+				rendaMensal = rendaMensal.split("\\ ")[1].replaceAll("\\.", "").replaceAll(",", ".");
+			}
 
 			ModelLogin modelLogin = new ModelLogin();
 			modelLogin.setId(id != null && !id.isEmpty() ? Long.valueOf(id) : null);
