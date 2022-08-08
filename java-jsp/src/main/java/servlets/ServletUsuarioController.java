@@ -13,6 +13,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import beandto.BeanDtoGraficoSalarioUser;
 import dao.DAOUsuarioRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -151,6 +152,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				request.getRequestDispatcher("principal/relUsuario.jsp").forward(request, response);
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioPDF")
 					|| acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
+				
 				String dataInicial = request.getParameter("dataInicial");
 				String dataFinal = request.getParameter("dataFinal");
 				List<ModelLogin> modelLogins = null;
@@ -181,6 +183,33 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				
 				response.setHeader("Content-Disposition", "attachment;filename=arquivo." + extensao); // seta o cabeçalho da requisição
 				response.getOutputStream().write(relatorio); // transforma a String em imagem e remove sujeira
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("graficoSalario")) {
+				
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				
+				if (dataInicial == null || dataInicial.isEmpty()
+						&& dataFinal == null || dataFinal.isEmpty()) {
+					
+					BeanDtoGraficoSalarioUser bdgsu = daoUsuarioRepository.montarGraficoMediaSalario(super.getUserLogado(request));
+					
+					ObjectMapper mapper = new ObjectMapper();
+					
+					String json = mapper.writeValueAsString(bdgsu);
+					response.getWriter().write(json);
+					
+				} else {
+					
+					BeanDtoGraficoSalarioUser bdgsu = daoUsuarioRepository.montarGraficoMediaSalario(super.getUserLogado(request), dataInicial, dataFinal);
+					
+					ObjectMapper mapper = new ObjectMapper();
+					
+					String json = mapper.writeValueAsString(bdgsu);
+					response.getWriter().write(json);
+					
+				}
+				
+				
 			}
 
 			else {

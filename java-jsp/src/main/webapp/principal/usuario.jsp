@@ -221,21 +221,23 @@
 																		id="uf" value="${modelusuario.uf}" required="required"/>
 																</div>
 															</div>
-
-															<button type="button" id="novo" class="btn btn-primary"
-																onclick="limparCampos();">Novo</button>
-															<button
-																class="btn btn-mat waves-effect waves-light btn-success">
-																Salvar</button>
-															<c:if test="${modelusuario.id != null && modelusuario.id > 0}">
-																<a href="<%= request.getContextPath() %>/ServletTelefone?idUser=${modelusuario.id}" class="btn btn-primary">Telefone</a>
-															</c:if>
-															<button type="button"
-																class="btn btn-mat waves-effect waves-light btn-danger"
-																onclick="criarDeleteAjax();">Excluir</button>
-															<button type="button" class="btn btn-inverse"
-																data-toggle="modal" data-target="#modalUsuario">
-																Pesquisar</button>
+															<div class="row d-flex justify-content-center">
+																<button type="button" id="novo" class="btn btn-primary col-6 col-sm-auto mb-3 mr-1"
+																	onclick="limparCampos();">Novo</button>
+																<button
+																	class="btn btn-mat waves-effect waves-light btn-success col-6 col-sm-auto mb-3 mr-1">
+																	Salvar</button>
+																<c:if test="${modelusuario.id != null && modelusuario.id > 0}">
+																	<a href="<%= request.getContextPath() %>/ServletTelefone?idUser=${modelusuario.id}" 
+																			class="btn btn-primary col-6 col-sm-auto mb-3 mr-1">Telefone</a>
+																</c:if>
+																<button type="button"
+																	class="btn btn-mat waves-effect waves-light btn-danger col-6 col-sm-auto mb-3 mr-1"
+																	onclick="criarDeleteAjax();">Excluir</button>
+																<button type="button" class="btn btn-inverse col-6 col-sm-auto mb-3 mr-1"
+																	data-toggle="modal" data-target="#modalUsuario">
+																	Pesquisar</button>
+															</div>
 														</form>
 														<span id="msg">${msg}</span>
 													</div>
@@ -248,23 +250,22 @@
 													<div class="card-header">
 														<h5>Lista de Usuários</h5>
 													</div>
-													<div class="card-block">
 														<table class="table table-hover" id="tableResultadoView">
-															<thead>
-																<tr class="bg-primary">
+															<thead class="">
+																<tr class="col-auto bg-info">
 																	<th>id</th>
 																	<th>Nome</th>
-																	<th>Email</th>
+																	<th class="d-none d-sm-block">Email</th>
 																	<th>Ver</th>
 																	<th>Deletar</th>
 																</tr>
 															</thead>
-															<tbody>
+															<tbody class="">
 																<c:forEach items="${modelLogins}" var="mL">
 																	<tr>
 																		<td><c:out value="${mL.id}"></c:out></td>
 																		<td><c:out value="${mL.nome}"></c:out></td>
-																		<td><c:out value="${mL.email}"></c:out></td>
+																		<td class="d-none d-sm-block"><c:out value="${mL.email}"></c:out></td>
 																		<td><a class="btn btn-info"
 																			href="<%= request.getContextPath() %>/ServletUsuarioController?acao=buscarEditar&id=${mL.id}">Ver</a></td>
 																		<td><a class="btn btn-danger"
@@ -273,8 +274,8 @@
 																</c:forEach>
 															</tbody>
 														</table>
-														<nav class="justify-content-center" aria-label="Page navigation example">
-														  <ul class="pagination ">
+														<nav class="mb-3" aria-label="Page navigation example">
+														  <ul class="pagination d-flex justify-content-center">
 														  
 														  	<%
 														  	
@@ -282,12 +283,12 @@
 														  	
 														  		for (int i = 0; i < paginas; i++) {
 														  			String url = request.getContextPath() + "/ServletUsuarioController?acao=paginar&offset=" + (i * 5);
+														  			
 														  			out.print("<li class=\"page-item\"><a class=\"page-link\" href=\""+url+"\">"+(i+1)+"</a></li>");
 														  		}
 														  	%>
 														  </ul>
-														</nav>
-													</div>
+														</nav >
 												</div>
 											</div>
 										</div>
@@ -307,7 +308,7 @@
 	<!-- Modal -->
 	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document" style="max-width: 50%">
+		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
@@ -333,7 +334,7 @@
 								<tr class="bg-primary">
 									<th scope="col">id</th>
 									<th scope="col">Nome</th>
-									<th scope="col">Email</th>
+									<th scope="col" class="d-none d-sm-block">Email</th>
 									<th scope="col">Editar</th>
 								</tr>
 							</thead>
@@ -468,7 +469,7 @@
 																+ lista[i].id
 																+ '</td> <td>'
 																+ lista[i].nome
-																+ '</td><td>'
+																+ '</td><td class="d-none d-sm-block">'
 																+ lista[i].email
 																+ '</td><td><button onclick="verEditar('
 																+ lista[i].id
@@ -521,7 +522,7 @@
 																+ lista[i].id
 																+ '</td> <td>'
 																+ lista[i].nome
-																+ '</td><td>'
+																+ '</td><td class="d-none d-sm-block">'
 																+ lista[i].email
 																+ '</td><td><button onclick="verEditar('
 																+ lista[i].id

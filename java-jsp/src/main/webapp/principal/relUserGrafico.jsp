@@ -48,21 +48,24 @@
 															method="get" id="formRel">
 															<input type="hidden" name="acao" id="acaoRelatorioImprimirTipo" value="imprimirRelatorioUser" />
 															
-															<div class="form-row align-items-center justify-content-center mb-3 border-bottom"">
-															    <div class="col-auto my-3">
+															<div class="form-row col-auto align-items-center justify-content-center mb-3 border-bottom">
+															    <div class="col-auto">
 															      <label class="col-form-label" for="dataInicial">Data Inicial</label>
 															      <input type="text" class="form-control mb-3" id="dataInicial" name="dataInicial"
 															      		value="${dataInicial}">
 															    </div>
-															    <div class="col-auto my-3">
+															    <div class="col-auto">
 															      <label class="col-form-label" for="dataFinal">Data Final</label>
 															      <input type="text" class="form-control mb-3" id="dataFinal" name="dataFinal"
 															      		value="${dataFinal}">
 															    </div>
-															    <div class="col-auto align-items-bottom">
-															      <button type="button" onclick="gerarGrafico()" class="btn btn-primary mb-3">Gerar gráfico</button>
-															    </div>
-														  </div>
+																<div
+																	class="col-12 col-sm-2 d-flex justify-content-center">
+																	<button type="button" onclick="gerarGrafico()"
+																		class="btn btn-primary mb-3">Gerar
+																		gráfico</button>
+																</div>
+															</div>
 														</form>
 														<div class="container">
 															<div>
@@ -87,52 +90,75 @@
 
 
 	<!-- Required Jquery -->
-	
+
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
 	<script>
+	    var myChart = new Chart(document.getElementById('myChart'))
 	
-	  function gerarGrafico() {
-		  const myChart = new Chart(
-				    document.getElementById('myChart'),
-				    {
-					    type: 'bar',
-					    data: {
-						    labels: [
-							    'January',
-							    'February',
-							    'March',
-							    'April',
-							    'May',
-							    'June',
-							  ],
-						    datasets: [{
-						      label: 'Média salarial por tipo',
-						      backgroundColor: 'rgb(255, 99, 132)',
-						      borderColor: 'rgb(255, 99, 132)',
-						      data: [0, 10, 5, 2, 20, 30, 45],
-						    }]
-						  },
-					    options: {}
-					  }
-				  );
-	} 
-	
-	$( function() {
-		  
-		  $("#dataNascimento,#dataInicial,#dataFinal").datepicker({
-			    dateFormat: 'dd/mm/yy',
-			    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-			    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-			    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-			    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-			    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-			    nextText: 'Próximo',
-			    prevText: 'Anterior'
+		function gerarGrafico() {
+			
+			var urlAction = document.getElementById('formRel').action
+			var dataInicial = document.getElementById('dataInicial').value
+			var dataFinal = document.getElementById('dataFinal').value
+			
+			$.ajax({
+				method : 'get',
+				url : urlAction,
+				data : 'dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&acao=graficoSalario'
+			}).done(function(response) {
+				
+				var json = JSON.parse(response)
+				
+				myChart.destroy()
+				
+				myChart = new Chart(document.getElementById('myChart'), {
+					type : 'bar',
+					data : {
+						labels : json.perfis,
+						datasets : [ {
+							label : 'Média salarial: R$',
+							backgroundColor : 'rgb(255, 99, 132)',
+							borderColor : 'rgb(255, 99, 132)',
+							data : json.salarios,
+						} ]
+					},
+					options : {}
+				});
+				
+			}).fail(function(xhr, status, errorThrown) {
+
+				alert('Erro ao buscar dados: ' + xhr.responseText);
+				
 			});
-	} );
-	
+
+		}
+
+		
+		$(function() {
+
+			$("#dataNascimento,#dataInicial,#dataFinal")
+					.datepicker(
+							{
+								dateFormat : 'dd/mm/yy',
+								dayNames : [ 'Domingo', 'Segunda', 'Terça',
+										'Quarta', 'Quinta', 'Sexta', 'Sábado' ],
+								dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S',
+										'S', 'D' ],
+								dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua',
+										'Qui', 'Sex', 'Sáb', 'Dom' ],
+								monthNames : [ 'Janeiro', 'Fevereiro', 'Março',
+										'Abril', 'Maio', 'Junho', 'Julho',
+										'Agosto', 'Setembro', 'Outubro',
+										'Novembro', 'Dezembro' ],
+								monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr',
+										'Mai', 'Jun', 'Jul', 'Ago', 'Set',
+										'Out', 'Nov', 'Dez' ],
+								nextText : 'Próximo',
+								prevText : 'Anterior'
+							});
+		});
 	</script>
-	
+
 </body>
 
 </html>

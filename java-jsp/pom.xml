@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.3</version>
+			<version>42.2.13</version>
 		</dependency>
 
 		<dependency>
@@ -53,7 +53,7 @@
 		<dependency>
 		    <groupId>net.sf.jasperreports</groupId>
 		    <artifactId>jasperreports</artifactId>
-		    <version>6.16.0</version>
+		    <version>6.17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!--
 <div class="page-header">
 	<div class="page-block">
 		<div class="row align-items-center">
@@ -13,9 +14,10 @@
 					<li class="breadcrumb-item"><a href="index.html"> <i
 							class="fa fa-home"></i>
 					</a></li>
-					<li class="breadcrumb-item"><a href="#!">Painel</a></li>
+					<li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/principal/principal.jsp">Painel</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 </div>
+  -->

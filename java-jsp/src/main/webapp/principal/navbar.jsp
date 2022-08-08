@@ -23,8 +23,8 @@
 								</div>
 							</div>
 						</div>
-						<a href="index.html"> <img class="img-fluid"
-							src="<%= request.getContextPath() %>/assets/images/logo.png" alt="Theme-Logo" />
+						<a href="<%= request.getContextPath() %>/principal/principal.jsp"> <img class="img-fluid"
+							width="60" height="48" src="<%= request.getContextPath() %>/assets/images/crud.png" alt="Theme-Logo" />
 						</a> <a class="mobile-options waves-effect waves-light"> <i
 							class="ti-more"></i>
 						</a>

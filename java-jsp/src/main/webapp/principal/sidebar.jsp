@@ -14,7 +14,7 @@
 				</c:if>
 				<c:if test="${imagemAvatar == '' || imagemAvatar == null}">
 					<img class="img-radius" name="fotoBase64" id="fotoBase64" alt="Imagem user" width="70px"
-								src="assets/images/avatar-2.jpg" style="aspect-ratio: 1/1" />
+								src="<%= request.getContextPath() %>/assets/images/avatar-2.jpg" style="aspect-ratio: 1/1" />
 				</c:if>
 				<div class="user-details">
 					<span id="more-details"><%= session.getAttribute("usuario") %><i class="fa fa-caret-down"></i></span>
