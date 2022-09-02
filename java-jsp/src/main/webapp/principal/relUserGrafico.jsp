@@ -52,12 +52,12 @@
 															    <div class="col-auto">
 															      <label class="col-form-label" for="dataInicial">Data Inicial</label>
 															      <input type="text" class="form-control mb-3" id="dataInicial" name="dataInicial"
-															      		value="${dataInicial}">
+															      		value="${dataInicial}" placeholder="Data de nascimento">
 															    </div>
 															    <div class="col-auto">
 															      <label class="col-form-label" for="dataFinal">Data Final</label>
 															      <input type="text" class="form-control mb-3" id="dataFinal" name="dataFinal"
-															      		value="${dataFinal}">
+															      		value="${dataFinal}" placeholder="Data de nascimento">
 															    </div>
 																<div
 																	class="col-12 col-sm-2 d-flex justify-content-center">
@@ -65,6 +65,9 @@
 																		class="btn btn-primary mb-3">Gerar
 																		gráfico</button>
 																</div>
+															</div>
+															<div class="d-flex justify-content-center mb-3">
+																<span class="small ">Informe um intervalo de datas de nascimento ou deixe em branco para mostrar todos</span>
 															</div>
 														</form>
 														<div class="container">

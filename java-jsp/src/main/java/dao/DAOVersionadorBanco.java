@@ -20,18 +20,18 @@ public class DAOVersionadorBanco implements Serializable {
 	
 	public void gravarArquivoSqlRodado(String nomeArquivo) throws Exception {
 		
-		String sql = "INSERT INTO versionadorbanco (arquivo_sql) VALUES (?);";
+		String querySql = "INSERT INTO versionadorbanco (arquivo_sql) VALUES (?);";
 		
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = connection.prepareStatement(querySql);
 		statement.setString(1, nomeArquivo);
 		statement.execute();
 	}
 	
 	public boolean arquivoSqlRodado(String nomeArquivo) throws Exception {
 		
-		String sql = "select count(1) > 0 as slqRodado from versionadorbanco where arquivo_sql = ?";
+		String querySql = "select count(1) > 0 as slqRodado from versionadorbanco where arquivo_sql = ?";
 		
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = connection.prepareStatement(querySql);
 		statement.setString(1, nomeArquivo);
 		
 		ResultSet resultado = statement.executeQuery();

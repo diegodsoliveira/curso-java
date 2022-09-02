@@ -7,17 +7,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import connection.SingleConnectionBanco;
 import dao.DAOVersionadorBanco;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 
 @WebFilter(urlPatterns = { "/principal/*" }) // Intercepta todas as requisições que vierem do projeto ou mapeamento
 public class FilterAutenticacao implements Filter {
@@ -52,15 +54,15 @@ public class FilterAutenticacao implements Filter {
 
 			String usuarioLogado = (String) session.getAttribute("usuario");
 
-			String urlAutenticar = req.getServletPath(); // retorna a url que está sendo acessada
+			String urlRequisitada = req.getServletPath(); // retorna a url que está sendo acessada
 
 			// validar se está logado. Se não, redireciona para a tela de login
-			if (usuarioLogado == null && !urlAutenticar.equalsIgnoreCase("/principal/ServletLogin")) { // não está
+			if (usuarioLogado == null && !urlRequisitada.equalsIgnoreCase("/principal/ServletLogin")) { // não está
 																										// logado
 
 				request.setAttribute("msg", "É preciso estar logado no sistema");
 
-				request.getRequestDispatcher("/index.jsp?url=" + urlAutenticar).forward(request, response);
+				request.getRequestDispatcher("/index.jsp?url=" + urlRequisitada).forward(request, response);
 
 				return; // para a execução e redireciona para o login
 
@@ -100,21 +102,21 @@ public class FilterAutenticacao implements Filter {
 				boolean arquivoJaRodado = daoVersionadorBanco.arquivoSqlRodado(file.getName());
 				
 				if (!arquivoJaRodado) {
-					FileInputStream entradaArquivo = new FileInputStream(file);
+					FileInputStream dadosDoArquivoSql = new FileInputStream(file);
 					
-					Scanner lerArquivo = new Scanner(entradaArquivo, "UTF-8");
+					Scanner leDadosDoArquivoSql = new Scanner(dadosDoArquivoSql, "UTF-8");
 					
-					StringBuilder sql = new StringBuilder();
+					StringBuilder querySql = new StringBuilder();
 					
-					while (lerArquivo.hasNext()) {
-						sql.append(lerArquivo.nextLine());
-						sql.append("\n");
+					while (leDadosDoArquivoSql.hasNext()) {
+						querySql.append(leDadosDoArquivoSql.nextLine());
+						querySql.append("\n");
 					}
-					connection.prepareStatement(sql.toString()).execute();
+					connection.prepareStatement(querySql.toString()).execute();
 					daoVersionadorBanco.gravarArquivoSqlRodado(file.getName());
 					
 					connection.commit();
-					lerArquivo.close();
+					leDadosDoArquivoSql.close();
 				}
 			}
 		} catch (Exception e) {

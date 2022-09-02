@@ -17,10 +17,10 @@ public class DAOLoginRepository {
 	}
 	
 	public boolean validarAutenticacao(ModelLogin model) {
-		String sql = "select * from model_login where upper(login) = upper(?) and upper(senha) = upper(?)";
+		String querySql = "select * from model_login where upper(login) = upper(?) and upper(senha) = upper(?)";
 		PreparedStatement statement;
 		try {
-			statement = connection.prepareStatement(sql);
+			statement = connection.prepareStatement(querySql);
 			statement.setString(1, model.getLogin());
 			statement.setString(2, model.getSenha());
 			

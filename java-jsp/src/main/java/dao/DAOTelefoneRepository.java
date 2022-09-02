@@ -20,37 +20,37 @@ public class DAOTelefoneRepository {
 		connection = SingleConnectionBanco.getConnection();
 	}
 
-	public List<ModelTelefone> listTelefone(Long id) throws Exception {
+	public List<ModelTelefone> findTelefoneById(Long id) throws Exception {
 
-		List<ModelTelefone> retorno = new ArrayList<>();
+		List<ModelTelefone> telefones = new ArrayList<ModelTelefone>();
 
-		String sql = "select * from telefone where usuario_pai_id = ?";
+		String querySql = "select * from telefone where usuario_pai_id = ?";
 
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = connection.prepareStatement(querySql);
 
 		statement.setLong(1, id);
 		
-		ResultSet resultado = statement.executeQuery();
+		ResultSet retornoQuerySql = statement.executeQuery();
 		
-		while (resultado.next()) {
+		while (retornoQuerySql.next()) {
 			ModelTelefone modelTelefone = new ModelTelefone();
 			
-			modelTelefone.setId(resultado.getLong("id"));
-			modelTelefone.setNumero(resultado.getString("numero"));
-			modelTelefone.setUsuario_pai_id(daoUsuarioRepository.consultaUsuarioID(resultado.getLong("usuario_pai_id")));
-			modelTelefone.setUsuario_cad_id(daoUsuarioRepository.consultaUsuarioID(resultado.getLong("usuario_cad_id")));
+			modelTelefone.setId(retornoQuerySql.getLong("id"));
+			modelTelefone.setNumero(retornoQuerySql.getString("numero"));
+			modelTelefone.setUsuario_pai_id(daoUsuarioRepository.findUserById(retornoQuerySql.getLong("usuario_pai_id")));
+			modelTelefone.setUsuario_cad_id(daoUsuarioRepository.findUserById(retornoQuerySql.getLong("usuario_cad_id")));
 			
-			retorno.add(modelTelefone);
+			telefones.add(modelTelefone);
 		}
 		
-		return retorno;
+		return telefones;
 
 	}
 
 	public void gravaTelefone(ModelTelefone modelTelefone) throws Exception {
-		String sql = "insert into telefone(numero, usuario_pai_id, usuario_cad_id) VALUES (?, ?, ?);";
+		String querySql = "insert into telefone(numero, usuario_pai_id, usuario_cad_id) VALUES (?, ?, ?);";
 
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = connection.prepareStatement(querySql);
 		statement.setString(1, modelTelefone.getNumero());
 		statement.setLong(2, modelTelefone.getUsuario_pai_id().getId());
 		statement.setLong(3, modelTelefone.getUsuario_cad_id().getId());
@@ -59,10 +59,10 @@ public class DAOTelefoneRepository {
 		connection.commit();
 	}
 
-	public void deleteFone(Long id) throws SQLException {
-		String sql = "delete from telefone where id=?";
+	public void deleteFoneById(Long id) throws SQLException {
+		String querySql = "delete from telefone where id=?";
 
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = connection.prepareStatement(querySql);
 
 		statement.setLong(1, id);
 
@@ -72,15 +72,15 @@ public class DAOTelefoneRepository {
 	}
 
 	public boolean isTelefoneIgual(String numero, String idUser) throws Exception {
-		String sql = "select count(1) > 0 as existe from telefone where usuario_pai_id=? and numero='" + numero + "\'";
+		String querySql = "select count(1) > 0 as existe from telefone where usuario_pai_id=? and numero='" + numero + "\'";
 
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = connection.prepareStatement(querySql);
 		statement.setLong(1, Long.valueOf(idUser));
-		ResultSet resultado = statement.executeQuery();
+		ResultSet retornoQuerySql = statement.executeQuery();
 
-		resultado.next();
+		retornoQuerySql.next();
 
-		return resultado.getBoolean("existe");
+		return retornoQuerySql.getBoolean("existe");
 	}
 
 }

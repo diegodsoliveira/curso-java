@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class SingleConnectionBanco {
 
-	private static String url = "jdbc:postgresql://localhost:5432/curso-jsp";
+	private static String url = "jdbc:postgresql://localhost:5432/jsp";
 	private static String user = "postgres";
 	private static String password = "admin";
 	private static Connection connection = null;
