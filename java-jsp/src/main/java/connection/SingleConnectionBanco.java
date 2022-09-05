@@ -5,10 +5,16 @@ import java.sql.DriverManager;
 
 public class SingleConnectionBanco {
 
-	private static String url = "jdbc:postgresql://localhost:5432/jsp";
+	private static String url = "jdbc:postgresql://localhost:5432/java-jsp?autoReconnect=true";
 	private static String user = "postgres";
 	private static String password = "admin";
 	private static Connection connection = null;
+	
+	/*
+	private static String url = "jdbc:postgresql://localhost:5432/jsp?autoreconnect=true";
+	private static String user = "postgres";
+	private static String password = "admin";
+	private static Connection connection = null; */
 
 	static {
 		conectar();
